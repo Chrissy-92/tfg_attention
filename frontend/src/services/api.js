@@ -26,4 +26,19 @@ export async function registrarUsuario({ nombre, email, password }) {
   return response.data;
 }
 
+// Función para enviar detalles
+export async function enviarDetalles(detalles, id_evaluacion) {
+  for (const detalle of detalles) {
+    await api.post("/detalles", {
+      id_evaluacion,
+      orden_estimulo: detalle.orden_estimulo,
+      estimulo: detalle.estimulo,
+      tiempo_reaccion: detalle.tiempo_reaccion,
+      respuesta: true,
+      correcto: detalle.correcto,
+      errores: detalle.errores,
+    });
+  }
+}
+
 export default api;
