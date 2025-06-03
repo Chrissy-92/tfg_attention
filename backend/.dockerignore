@@ -1,0 +1,14 @@
+# Excluir dependencias instaladas
+node_modules
+npm-debug.log
+Dockerfile*
+docker-compose*.yml
+
+# Control de versiones
+.git
+.gitignore
+
+# Archivos de sistema y editores
+*.swp
+*.DS_Store
+.vscode/

@@ -1,0 +1,37 @@
+
+services:
+  db:
+    image: postgres:15
+    # restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: tfg_atencion
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - '5432:5432'
+
+  api:
+    build:
+      context: ./backend
+    command: npm run dev
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    ports:
+      - '4000:4000'
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: example
+      DB_NAME: tfg_atencion
+      JWT_SECRET: a_super_secret_key
+    depends_on:
+      - db
+
+volumes:
+  db_data:
