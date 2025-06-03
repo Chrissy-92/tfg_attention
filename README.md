@@ -1,4 +1,4 @@
-TFG Attention API - Backend REST Documentation
+# TFG Attention API - Backend REST Documentation
 
 Este documento describe los endpoints disponibles de la API REST del backend del proyecto TFG Attention.
 
@@ -29,7 +29,7 @@ Crear archivo .env a partir del ejemplo:
 
 cp .env.example .env
 
-# Luego edita el archivo .env y completa con tus valores
+Luego edita el archivo .env y completa con tus valores
 
 Levantar el servidor en modo desarrollo:
 
