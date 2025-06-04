@@ -11,8 +11,22 @@ export default function ActivarPerfilAlumno() {
     nuevaPassword: "",
     imagen_url: "",
   });
+
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(false);
+
+  const avataresDisponibles = [
+    "/alumnoAvatar_h01.png",
+    "/alumnoAvatar_h02.png",
+    "/alumnoAvatar_h03.png",
+    "/alumnoAvatar_h04.png",
+    "/alumnoAvatar_h05.png",
+    "/alumnoAvatar_h06.png",
+    "/alumnaAvatar_f01.png",
+    "/alumnaAvatar_f02.png",
+    "/alumnaAvatar_f03.png",
+    "/alumnaAvatar_f04.png",
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,15 +83,37 @@ export default function ActivarPerfilAlumno() {
           required
         />
 
-        <input
-          type="text"
-          name="imagen_url"
-          placeholder="URL del nuevo avatar"
-          className="w-full px-4 py-2 border rounded-md"
-          value={form.imagen_url}
-          onChange={handleChange}
-          required
-        />
+        <div>
+          <label className="block mb-2 font-medium">Elige tu avatar:</label>
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            {avataresDisponibles.map((src) => (
+              <img
+                key={src}
+                src={src}
+                alt="avatar"
+                className={`cursor-pointer rounded-xl border-4 ${
+                  form.imagen_url === src
+                    ? "border-blue-600"
+                    : "border-transparent"
+                }`}
+                onClick={() =>
+                  setForm((prev) => ({ ...prev, imagen_url: src }))
+                }
+              />
+            ))}
+          </div>
+
+          {form.imagen_url && (
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-1">Avatar seleccionado:</p>
+              <img
+                src={form.imagen_url}
+                alt="seleccionado"
+                className="w-24 h-24 mx-auto rounded-full border-4 border-blue-600"
+              />
+            </div>
+          )}
+        </div>
 
         <button
           type="submit"
