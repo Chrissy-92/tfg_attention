@@ -1,15 +1,31 @@
-// src/components/LoginAlumno.jsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginAlumno } from "../services/api";
 import userDefault from "/user_default.jpg";
 
 export default function LoginAlumno() {
   const [nombre, setNombre] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Intento login alumno →", { nombre, password });
-    // Aquí irá la lógica de autenticación cuando esté implementada
+    setError(null);
+
+    try {
+      const alumno = await loginAlumno({ nombre, password });
+
+      localStorage.setItem("alumno", JSON.stringify(alumno));
+
+      if (alumno.cambio_requerido) {
+        navigate(`/activar-perfil/${alumno.id_nino}`);
+      } else {
+        navigate("/dashboard-alumno");
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || "Error al iniciar sesión");
+    }
   };
 
   return (
@@ -21,6 +37,7 @@ export default function LoginAlumno() {
           className="mx-auto mb-4 w-32 h-32 rounded-xl object-cover"
         />
         <h2 className="text-xl font-semibold text-center mb-4">Login Alumno</h2>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -28,6 +45,7 @@ export default function LoginAlumno() {
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
             className="w-full px-4 py-2 border rounded-md"
+            required
           />
           <input
             type="password"
@@ -35,6 +53,7 @@ export default function LoginAlumno() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 border rounded-md"
+            required
           />
           <button
             type="submit"

@@ -3,8 +3,7 @@ import jwt from "jsonwebtoken";
 import { createUser, findUserByEmail } from "../models/usuario.model.js";
 
 export async function register(req, res) {
-  const { nombre, email, password } = req.body;
-  const imagen = req.file ? `/uploads/${req.file.filename}` : null;
+  const { nombre, email, password, rol, avatar_url } = req.body;
 
   try {
     if (await findUserByEmail(email)) {
@@ -16,11 +15,17 @@ export async function register(req, res) {
       nombre,
       email,
       password: hash,
-      avatar_url: imagen,
+      rol,
+      avatar_url,
     });
 
     const token = jwt.sign(
-      { sub: user.id_usuario, nombre: user.nombre },
+      {
+        sub: user.id_usuario,
+        nombre: user.nombre,
+        rol: user.rol,
+        avatar_url: user.avatar_url,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "8h" }
     );
@@ -42,7 +47,12 @@ export async function login(req, res) {
     }
 
     const token = jwt.sign(
-      { sub: user.id_usuario, nombre: user.nombre },
+      {
+        sub: user.id_usuario,
+        nombre: user.nombre,
+        rol: user.rol,
+        avatar_url: user.avatar_url,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "8h" }
     );

@@ -1,4 +1,3 @@
-// src/components/LoginPsicologo.jsx
 import { useState } from "react";
 import api, { setAuthToken } from "../services/api.js";
 import { useAuth } from "../hooks/useAuth.jsx";

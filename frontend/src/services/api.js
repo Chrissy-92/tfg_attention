@@ -1,4 +1,3 @@
-// frontend/src/services/api.js
 import axios from "axios";
 
 console.log("ENV →", import.meta.env);
@@ -22,6 +21,31 @@ export async function registrarUsuario({ nombre, email, password }) {
     nombre,
     email,
     password,
+  });
+  return response.data;
+}
+
+// Función para loguear niño
+export async function loginAlumno({ nombre, password }) {
+  const response = await api.post("/alumnos/login", {
+    nombre,
+    password,
+  });
+  return response.data; // { id_nino, nombre, imagen_url }
+}
+
+// Función para activar el perfil del alumno
+export async function activarAlumno({
+  id_nino,
+  nombre,
+  nuevaPassword,
+  imagen_url,
+}) {
+  const response = await api.post("/alumnos/activar", {
+    id_nino,
+    nombre,
+    nuevaPassword,
+    imagen_url,
   });
   return response.data;
 }

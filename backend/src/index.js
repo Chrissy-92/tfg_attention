@@ -12,6 +12,7 @@ import pruebasRoutes from "./routes/pruebas.routes.js";
 import resultadosRoutes from "./routes/resultados.routes.js";
 import detallesRoutes from "./routes/detalles.routes.js";
 import integracionRoutes from "./routes/integracion.routes.js";
+import alumnosRoutes from "./routes/alumnos.routes.js";
 
 const app = express();
 app.use(cors());
@@ -29,6 +30,7 @@ app.use("/pruebas", pruebasRoutes);
 app.use("/resultados", resultadosRoutes);
 app.use("/detalles", detallesRoutes);
 app.use("/integracion", integracionRoutes);
+app.use("/alumnos", alumnosRoutes);
 
 // Manejo de errores globales
 process.on("uncaughtException", (err) => {

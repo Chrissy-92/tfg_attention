@@ -10,12 +10,13 @@ import LoginPsicologo from "./components/LoginPsicologo.jsx";
 import LoginAlumno from "./components/LoginAlumno.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import NinosPage from "./pages/NinosPage.jsx";
-import NinoForm from "./components/NinoForm.jsx";
+import NinoFormAdd from "./components/NinoFormAdd.jsx";
 import DashboardAlumno from "./components/DashboardAlumno.jsx";
 import StroopTestPage from "./pages/StroopTestPage";
 import CancelacionPage from "./pages/CancelacionPage";
 import ReaccionRapidaPage from "./pages/ReaccionRapidaPage";
 import MemoriaTrabajoPage from "./pages/MemoriaTrabajoPage";
+import ActivarPerfilAlumno from "./components/ActivarPerfilAlumno.jsx";
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
 
 function PrivateRoute({ children }) {
@@ -31,6 +32,10 @@ export default function App() {
           <Route path="/" element={<Inicio />} />
           <Route path="/login-psicologo" element={<LoginPsicologo />} />
           <Route path="/login-alumno" element={<LoginAlumno />} />
+          <Route
+            path="/activar-perfil/:id_nino"
+            element={<ActivarPerfilAlumno />}
+          />
           <Route path="/registro" element={<RegistroPage />} />
           <Route
             path="/ninos"
@@ -52,7 +57,7 @@ export default function App() {
             path="/ninos/nuevo"
             element={
               <PrivateRoute>
-                <NinoForm />
+                <NinoFormAdd />
               </PrivateRoute>
             }
           />

@@ -1,4 +1,3 @@
-// src/components/RegisterForm.jsx
 import { useState } from "react";
 import { registrarUsuario } from "../services/api";
 
@@ -24,7 +23,6 @@ export default function RegisterForm() {
     try {
       const result = await registrarUsuario(form);
       console.log("Usuario registrado:", result);
-      // Aquí podrías redirigir o mostrar mensaje de éxito
     } catch (err) {
       console.error("Error al registrar:", err);
     }
