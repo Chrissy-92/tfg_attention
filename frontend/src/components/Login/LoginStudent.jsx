@@ -1,43 +1,43 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginAlumno } from "../services/api";
-import userDefault from "/user_default.jpg";
+import { useAuth } from "../../hooks/useAuth";
+import api from "../../services/api";
+import ImgPerfil from "../ImgPerfil";
+import PopupModal from "../PopupModal";
+import CardWhite from "../CardWhite";
+import Button from "../Button";
 
-export default function LoginAlumno() {
+export default function LoginStudent() {
   const [nombre, setNombre] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [modal, setModal] = useState(null);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-
     try {
-      const alumno = await loginAlumno({ nombre, password });
-
-      localStorage.setItem("alumno", JSON.stringify(alumno));
-
-      if (alumno.cambio_requerido) {
-        navigate(`/activar-perfil/${alumno.id_nino}`);
+      const res = await api.post("/alumnos/login", { nombre, password });
+      login({ token: res.data.token, user: res.data.user });
+      if (res.data.user.needsActivation) {
+        navigate(`/activar-perfil/${res.data.user.id_nino}`);
       } else {
-        navigate("/dashboard-alumno");
+        navigate("/dashboard-student");
       }
     } catch (err) {
-      setError(err.response?.data?.error || "Error al iniciar sesión");
+      setModal({
+        tipo: "error",
+        mensaje: err.response?.data?.error || "Error al iniciar sesión",
+      });
+      setTimeout(() => setModal(null), 2500);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100">
-      <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
-        <img
-          src={userDefault}
-          alt="avatar alumno"
-          className="mx-auto mb-4 w-32 h-32 rounded-xl object-cover"
-        />
+    <div className="min-h-screen flex items-center justify-center bg-slate-200">
+      <CardWhite>
+        <ImgPerfil url="/avatars/user_default.jpg" />
         <h2 className="text-xl font-semibold text-center mb-4">Login Alumno</h2>
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -55,14 +55,18 @@ export default function LoginAlumno() {
             className="w-full px-4 py-2 border rounded-md"
             required
           />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
-          >
+          <Button type="submit" color="verde" full>
             Entrar
-          </button>
+          </Button>
         </form>
-      </div>
+        {modal && (
+          <PopupModal
+            tipo={modal.tipo}
+            mensaje={modal.mensaje}
+            onClose={() => setModal(null)}
+          />
+        )}
+      </CardWhite>
     </div>
   );
 }

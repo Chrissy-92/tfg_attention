@@ -4,19 +4,32 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
+// Pages
 import Inicio from "./pages/Inicio.jsx";
-import RegistroPage from "./pages/RegistroPage.jsx";
-import LoginPsicologo from "./components/LoginPsicologo.jsx";
-import LoginAlumno from "./components/LoginAlumno.jsx";
-import Dashboard from "./pages/DashboardPsychologist.jsx";
-import NinosPage from "./pages/StudentsPage.jsx";
-import NinoFormAdd from "./components/NinoFormAdd.jsx";
-import DashboardAlumno from "./components/Student/DashboardStudent.jsx";
-import StroopTestPage from "./pages/StroopTestPage";
-import CancelacionPage from "./pages/CancelacionPage";
-import ReaccionRapidaPage from "./pages/QuickReactionPage.jsx";
-import MemoriaTrabajoPage from "./pages/WorkingMemoryPage.jsx";
-import ActivarPerfilAlumno from "./components/ActivarPerfilAlumno.jsx";
+import RegisterPsychologistPage from "./pages/RegisterPsychologistPage.jsx";
+import StroopTestPage from "./pages/StroopTestPage.jsx";
+import CancellationPage from "./pages/CancellationPage.jsx";
+import QuickReactionPage from "./pages/QuickReactionPage.jsx";
+import WorkingMemoryPage from "./pages/WorkingMemoryPage.jsx";
+import StudentsPage from "./pages/StudentsPage.jsx";
+
+// Login
+import LoginPsychologist from "./components/Login/LoginPsychologist.jsx";
+import LoginStudent from "./components/Login/LoginStudent.jsx";
+import ActivateStudentProfile from "./components/Login/ActivateStudentProfile.jsx";
+
+// Psychologist
+import PsychologistDashboard from "./components/Psychologist/PsychologistDashboard.jsx";
+import StudentFormAdd from "./components/Psychologist/StudentFormAdd.jsx";
+
+// Student
+import StudentDashboard from "./components/Student/StudentDashboard.jsx";
+
+// Global
+import Header from "./components/Header.jsx";
+
+// Auth
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
 
 function PrivateRoute({ children }) {
@@ -28,47 +41,61 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
+        <Header title="TFG Atención Infantil" />
         <Routes>
           <Route path="/" element={<Inicio />} />
-          <Route path="/login-psicologo" element={<LoginPsicologo />} />
-          <Route path="/login-alumno" element={<LoginAlumno />} />
+          <Route path="/login-psychologist" element={<LoginPsychologist />} />
+          <Route path="/login-student" element={<LoginStudent />} />
+          <Route path="/register" element={<RegisterPsychologistPage />} />
           <Route
-            path="/activar-perfil/:id_nino"
-            element={<ActivarPerfilAlumno />}
+            path="/activate-profile/:id_student"
+            element={<ActivateStudentProfile />}
           />
-          <Route path="/registro" element={<RegistroPage />} />
+
+          {/* Psychologist */}
           <Route
-            path="/ninos"
+            path="/students"
             element={
               <PrivateRoute>
-                <NinosPage />
+                <StudentsPage />
               </PrivateRoute>
             }
           />
           <Route
-            path="/*"
+            path="/students/new"
             element={
               <PrivateRoute>
-                <Dashboard />
+                <StudentFormAdd />
               </PrivateRoute>
             }
           />
           <Route
-            path="/ninos/nuevo"
+            path="/psychologist-dashboard"
             element={
               <PrivateRoute>
-                <NinoFormAdd />
+                <PsychologistDashboard />
               </PrivateRoute>
             }
           />
+
+          {/* Student */}
           <Route
-            path="/dashboard-alumno"
-            element={<DashboardAlumno idNino={1} />}
+            path="/student-dashboard"
+            element={
+              <PrivateRoute>
+                <StudentDashboard />
+              </PrivateRoute>
+            }
           />
+
+          {/* Tests */}
           <Route path="/stroop-test" element={<StroopTestPage />} />
-          <Route path="/cancelacion" element={<CancelacionPage />} />
-          <Route path="/reaccion" element={<ReaccionRapidaPage />} />
-          <Route path="/memoria" element={<MemoriaTrabajoPage />} />
+          <Route path="/cancellation" element={<CancellationPage />} />
+          <Route path="/quick-reaction" element={<QuickReactionPage />} />
+          <Route path="/working-memory" element={<WorkingMemoryPage />} />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

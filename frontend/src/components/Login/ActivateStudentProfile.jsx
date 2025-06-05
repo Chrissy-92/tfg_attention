@@ -1,127 +1,104 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { activarAlumno } from "../services/api";
+import api from "../../services/api.js";
+import CardWhite from "../CardWhite.jsx";
+import ImgPerfil from "../ImgPerfil.jsx";
+import ImgSelector from "../Student/ImgSelector.jsx";
+import PopupModal from "../PopupModal.jsx";
 
-export default function ActivarPerfilAlumno() {
-  const { id_nino } = useParams();
+export default function ActivateStudentProfile() {
+  const { id_student } = useParams();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    nombre: "",
-    nuevaPassword: "",
-    imagen_url: "",
-  });
+  const [nombre, setNombre] = useState("");
+  const [password, setPassword] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("/user_default.jpg");
+  const [modal, setModal] = useState(null);
 
-  const [error, setError] = useState(null);
-  const [exito, setExito] = useState(false);
-
-  const avataresDisponibles = [
-    "/alumnoAvatar_h01.png",
-    "/alumnoAvatar_h02.png",
-    "/alumnoAvatar_h03.png",
-    "/alumnoAvatar_h04.png",
-    "/alumnoAvatar_h05.png",
-    "/alumnoAvatar_h06.png",
-    "/alumnaAvatar_f01.png",
-    "/alumnaAvatar_f02.png",
-    "/alumnaAvatar_f03.png",
-    "/alumnaAvatar_f04.png",
-  ];
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    // Opcional: se podrían precargar los datos del alumno aquí si se necesitan
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-
     try {
-      await activarAlumno({ id_nino, ...form });
-      setExito(true);
+      await api.post("/alumnos/activar", {
+        id_nino: id_student,
+        nombre,
+        password,
+        avatar_url: avatarUrl,
+      });
+
+      setModal({ tipo: "exito", mensaje: "Cuenta activada con éxito" });
       setTimeout(() => {
-        navigate("/login-alumno");
-      }, 2000);
+        setModal(null);
+        navigate("/student-dashboard");
+      }, 2500);
     } catch (err) {
-      setError(err.response?.data?.error || "Error al activar perfil");
+      console.error(err);
+      setModal({
+        tipo: "error",
+        mensaje:
+          err.response?.data?.error || "Error al activar el perfil del alumno",
+      });
+      setTimeout(() => setModal(null), 3000);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md space-y-4"
-      >
-        <h2 className="text-xl font-bold text-center">Activar Perfil</h2>
+    <div className="min-h-screen flex items-center justify-center">
+      <CardWhite>
+        <form onSubmit={handleSubmit} className="space-y-4 w-full">
+          <h2 className="text-xl font-semibold text-center mb-4">
+            Activar perfil del alumno
+          </h2>
 
-        {error && <p className="text-red-500 text-center text-sm">{error}</p>}
-        {exito && (
-          <p className="text-green-600 text-center text-sm">
-            Perfil activado. Redirigiendo...
-          </p>
-        )}
-
-        <input
-          type="text"
-          name="nombre"
-          placeholder="Tu nombre (verificación)"
-          className="w-full px-4 py-2 border rounded-md"
-          value={form.nombre}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          type="password"
-          name="nuevaPassword"
-          placeholder="Nueva contraseña"
-          className="w-full px-4 py-2 border rounded-md"
-          value={form.nuevaPassword}
-          onChange={handleChange}
-          required
-        />
-
-        <div>
-          <label className="block mb-2 font-medium">Elige tu avatar:</label>
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            {avataresDisponibles.map((src) => (
-              <img
-                key={src}
-                src={src}
-                alt="avatar"
-                className={`cursor-pointer rounded-xl border-4 ${
-                  form.imagen_url === src
-                    ? "border-blue-600"
-                    : "border-transparent"
-                }`}
-                onClick={() =>
-                  setForm((prev) => ({ ...prev, imagen_url: src }))
-                }
-              />
-            ))}
+          <div className="flex justify-center">
+            <ImgPerfil src={avatarUrl} size="large" />
           </div>
 
-          {form.imagen_url && (
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-1">Avatar seleccionado:</p>
-              <img
-                src={form.imagen_url}
-                alt="seleccionado"
-                className="w-24 h-24 mx-auto rounded-full border-4 border-blue-600"
-              />
-            </div>
-          )}
-        </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Nombre</label>
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+          </div>
 
-        <button
-          type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md"
-        >
-          Activar Perfil
-        </button>
-      </form>
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Nueva contraseña
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+          </div>
+
+          <ImgSelector value={avatarUrl} onSelect={setAvatarUrl} />
+
+          <button
+            type="submit"
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md"
+          >
+            Activar perfil
+          </button>
+        </form>
+      </CardWhite>
+
+      {modal && (
+        <PopupModal
+          tipo={modal.tipo}
+          mensaje={modal.mensaje}
+          onClose={() => setModal(null)}
+        />
+      )}
     </div>
   );
 }

@@ -1,66 +1,76 @@
 import { useState } from "react";
-import api, { setAuthToken } from "../services/api.js";
-import { useAuth } from "../hooks/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
-import userDefault from "/user_default.jpg";
+import { loginUsuario } from "../../services/api";
+import PopupModal from "../PopupModal";
+import ImgPerfil from "../ImgPerfil";
+import CardWhite from "../CardWhite";
+import Button from "../Button";
 
-export default function LoginPsicologo() {
-  const { login } = useAuth();
+export default function LoginPsychologist() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [modal, setModal] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/auth/login", { email, password });
-      const { token, user } = res.data;
-      setAuthToken(token);
-      login({ token, user });
+      const result = await loginUsuario(form);
+      console.log("✅ Login correcto:", result);
+      localStorage.setItem("token", result.token);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.error || "Error en login");
+      console.error("❌ Error en login:", err);
+      setModal({
+        tipo: "error",
+        mensaje: "Credenciales inválidas. Inténtalo de nuevo.",
+      });
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100">
-      <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
-        <img
-          src={userDefault}
-          alt="avatar psicólogo"
-          className="mx-auto mb-4 w-32 h-32 rounded-xl object-cover"
+    <>
+      <CardWhite>
+        <div className="flex flex-col items-center space-y-4">
+          <ImgPerfil src="/logo.png" alt="Logo" className="w-24 h-24" />
+          <h2 className="text-xl font-semibold">Login Psicólogo</h2>
+          <form onSubmit={handleSubmit} className="w-full space-y-4">
+            <input
+              type="email"
+              name="email"
+              placeholder="Correo electrónico"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+            <Button type="submit" color="verde">
+              Entrar
+            </Button>
+          </form>
+        </div>
+      </CardWhite>
+
+      {modal && (
+        <PopupModal
+          tipo={modal.tipo}
+          mensaje={modal.mensaje}
+          onClose={() => setModal(null)}
         />
-        <h2 className="text-xl font-semibold text-center mb-4">
-          Login Psicólogo
-        </h2>
-        {error && (
-          <p className="text-red-500 text-sm text-center mb-3">{error}</p>
-        )}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md"
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md"
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
-          >
-            Entrar
-          </button>
-        </form>
-      </div>
-    </div>
+      )}
+    </>
   );
 }

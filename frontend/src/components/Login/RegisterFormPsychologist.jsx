@@ -1,0 +1,109 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { registrarUsuario } from "../../services/api";
+import CardWhite from "../CardWhite";
+import ImgPerfil from "../ImgPerfil";
+import PopupModal from "../PopupModal";
+
+export default function RegisterFormPsychologist() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    nombre: "",
+    email: "",
+    password: "",
+    imagen: null,
+  });
+  const [modal, setModal] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { nombre, email, password, imagen } = formData;
+      const response = await registrarUsuario({
+        nombre,
+        email,
+        password,
+        imagen,
+      });
+      setModal({ tipo: "exito", mensaje: "Registro exitoso" });
+      setTimeout(() => {
+        setModal(null);
+        navigate("/dashboard");
+      }, 2500);
+    } catch (error) {
+      const mensaje = error.response?.data?.error?.includes("registrado")
+        ? "Error: Usuario ya registrado"
+        : "Error en el registro";
+      setModal({ tipo: "error", mensaje });
+      setTimeout(() => setModal(null), 2500);
+    }
+  };
+
+  return (
+    <CardWhite>
+      <h2 className="text-2xl font-semibold text-center mb-4">
+        Registro de Psicólogo
+      </h2>
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="nombre"
+          placeholder="Nombre completo"
+          value={formData.nombre}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded-md"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Correo electrónico"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded-md"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+          value={formData.password}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded-md"
+        />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Imagen de perfil
+          </label>
+          <input
+            type="file"
+            name="imagen"
+            accept="image/*"
+            onChange={handleChange}
+            className="w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md"
+        >
+          Registrarse
+        </button>
+      </form>
+
+      {modal && (
+        <PopupModal
+          tipo={modal.tipo}
+          mensaje={modal.mensaje}
+          onClose={() => setModal(null)}
+        />
+      )}
+    </CardWhite>
+  );
+}

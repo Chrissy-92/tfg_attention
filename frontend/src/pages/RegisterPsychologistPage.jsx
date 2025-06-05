@@ -2,7 +2,7 @@ import { useState } from "react";
 import { registrarUsuario } from "../services/api.js";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/PopupModal.jsx";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth.jsx";
 
 export default function RegistroPage() {
   const { login } = useAuth();
