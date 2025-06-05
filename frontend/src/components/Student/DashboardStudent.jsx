@@ -1,101 +1,108 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import Header from "../Header";
+import Aside from "../Aside";
+import BottomContainer from "../BottomContainer";
 
-export default function DashboardAlumno({ idNino }) {
+export default function DashboardStudent() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
-  const irAPrueba = (ruta) => {
-    navigate(ruta, { state: { id_nino: idNino } });
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      {/* Columna izquierda con avatar */}
-      <aside className="w-1/4 bg-white shadow-lg flex flex-col items-center p-6">
-        <img
-          src="/avatar_default.png"
-          alt="Avatar Alumno"
-          className="w-32 h-32 rounded-full border-4 border-violet-300"
-        />
-        <h2 className="mt-4 text-xl font-semibold text-gray-700">Alumno</h2>
-        <p className="text-sm text-gray-500">ID: {idNino}</p>
-      </aside>
+    <div className="min-h-screen bg-slate-100">
+      <Header
+        title="Panel del Estudiante"
+        buttonLabel="Home"
+        onButtonClick={() => navigate("/student-dashboard")}
+      />
 
-      {/* Contenido principal */}
-      <main className="w-3/4 p-8 grid grid-cols-2 gap-6">
-        {/* Tarea Stroop */}
-        <section className="bg-purple-200 p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-bold mb-2">Aplicar Tarea Stroop</h2>
-          <h4 className="font-semibold mb-1">Instrucciones:</h4>
-          <p className="text-sm mb-4">
-            Pulsa la barra espaciadora cuando el nombre del color y el color de
-            las letras sean el mismo. Si no coinciden, no hagas nada.
-          </p>
-          <p className="text-sm mb-4">Pulsa en "EMPEZAR" cuando estés listo.</p>
-          <button
-            onClick={() => irAPrueba("/stroop-test")}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-          >
-            EMPEZAR
-          </button>
-        </section>
+      <div className="flex gap-4 px-4">
+        <div className="w-72">
+          <Aside
+            nombre={user?.nombre}
+            avatar_url={user?.imagen_url}
+            descripcion={[
+              "¡Bienvenido a tu espacio personal!",
+              "Selecciona una prueba para comenzar.",
+            ]}
+            buttonLabel="Cerrar sesión"
+            onButtonClick={handleLogout}
+            buttonColor="rojo"
+          />
+        </div>
 
-        {/* Cancelación de Letras */}
-        <section className="bg-orange-200 p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-bold mb-2">
-            Aplicar Test de Cancelación de Letras
-          </h2>
-          <h4 className="font-semibold mb-1">Instrucciones:</h4>
-          <p className="text-sm mb-4">
-            Presta atención a la letra objetivo. Encuéntrala en el conjunto y
-            haz clic en ella lo más rápido posible.
-          </p>
-          <p className="text-sm mb-4">Pulsa en "EMPEZAR" cuando estés listo.</p>
-          <button
-            onClick={() => irAPrueba("/cancelacion")}
-            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition"
-          >
-            EMPEZAR
-          </button>
-        </section>
+        <div className="flex-1 max-w-5xl">
+          <BottomContainer>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+              {/* Stroop Test */}
+              <section className="bg-purple-200 p-6 rounded-2xl shadow">
+                <h2 className="text-xl font-bold mb-2">Tarea Stroop</h2>
+                <p>
+                  Pulsa la barra espaciadora cuando el nombre del color y el
+                  color de las letras sean el mismo.
+                </p>
+                <p>No hagas nada si no coinciden.</p>
+                <p className="mt-2">Pulsa en EMPEZAR cuando estés listo.</p>
+                <button
+                  onClick={() => navigate("/stroop")}
+                  className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+                >
+                  EMPEZAR
+                </button>
+              </section>
 
-        {/* Reacción Rápida */}
-        <section className="bg-green-200 p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-bold mb-2">
-            Aplicar Test de Reacción Rápida
-          </h2>
-          <h4 className="font-semibold mb-1">Instrucciones:</h4>
-          <p className="text-sm mb-4">
-            Al principio pulsa sobre la figura de mayor tamaño. Luego
-            cambiaremos y deberás pulsar la que tenga el número más alto.
-          </p>
-          <p className="text-sm mb-4">Pulsa en "EMPEZAR" cuando estés listo.</p>
-          <button
-            onClick={() => irAPrueba("/reaccion")}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-          >
-            EMPEZAR
-          </button>
-        </section>
+              {/* Cancellation Words */}
+              <section className="bg-orange-200 p-6 rounded-2xl shadow">
+                <h2 className="text-xl font-bold mb-2">Test de Cancelación</h2>
+                <p>Busca y pulsa la letra objetivo tan rápido como puedas.</p>
+                <p className="mt-2">Pulsa en EMPEZAR cuando estés listo.</p>
+                <button
+                  onClick={() => navigate("/cancellation")}
+                  className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition"
+                >
+                  EMPEZAR
+                </button>
+              </section>
 
-        {/* Memoria de Trabajo */}
-        <section className="bg-pink-200 p-6 rounded-2xl shadow">
-          <h2 className="text-xl font-bold mb-2">
-            Aplicar Test de Memoria de Trabajo
-          </h2>
-          <h4 className="font-semibold mb-1">Instrucciones:</h4>
-          <p className="text-sm mb-4">
-            Memoriza la posición de los dibujos en la cuadrícula. Luego haz clic
-            donde creas que estaba.
-          </p>
-          <p className="text-sm mb-4">Pulsa en "EMPEZAR" cuando estés listo.</p>
-          <button
-            onClick={() => irAPrueba("/memoria")}
-            className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
-          >
-            EMPEZAR
-          </button>
-        </section>
-      </main>
+              {/* Quick Reaction */}
+              <section className="bg-green-200 p-6 rounded-2xl shadow">
+                <h2 className="text-xl font-bold mb-2">Reacción Rápida</h2>
+                <p>
+                  Al inicio, pulsa la figura más grande ignorando los números.
+                </p>
+                <p>
+                  Después, pulsa la que tenga el número mayor ignorando el
+                  tamaño.
+                </p>
+                <button
+                  onClick={() => navigate("/quick-reaction")}
+                  className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                >
+                  EMPEZAR
+                </button>
+              </section>
+
+              {/* Working Memory */}
+              <section className="bg-pink-200 p-6 rounded-2xl shadow">
+                <h2 className="text-xl font-bold mb-2">Memoria de Trabajo</h2>
+                <p>Memoriza la posición de cada dibujo en la cuadrícula.</p>
+                <p>Después pulsa el lugar donde crees que estaba.</p>
+                <button
+                  onClick={() => navigate("/working-memory")}
+                  className="mt-4 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
+                >
+                  EMPEZAR
+                </button>
+              </section>
+            </div>
+          </BottomContainer>
+        </div>
+      </div>
     </div>
   );
 }

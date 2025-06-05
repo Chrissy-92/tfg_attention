@@ -1,26 +1,26 @@
-import ImgPerfil from "../ImgPerfil";
-import Button from "../Button";
+import ImgPerfil from "../../ImgPerfil";
+import Button from "../../Button";
+import { useNavigate } from "react-router-dom";
 
-export default function StudentCard({
-  nombre,
-  avatar_url,
-  onClick,
-  seleccionado = false,
-}) {
-  const borderClass = seleccionado
-    ? "border-4 border-amber-200"
-    : "border border-gray-200";
+export default function StudentCard({ student, isSelected, onSelect }) {
+  const navigate = useNavigate();
+  const handleClick = () => navigate(`/integracion/${student.id_nino}`);
 
   return (
     <div
-      className={`bg-white rounded-xl p-4 shadow text-center ${borderClass}`}
+      onClick={onSelect}
+      className={`border-4 rounded-xl p-4 text-center cursor-pointer transition-all ${
+        isSelected ? "border-amber-200" : "border-transparent"
+      }`}
     >
-      <ImgPerfil src={avatar_url} alt={`Avatar de ${nombre}`} size="md" />
-      <div className="mt-4">
-        <Button onClick={onClick} className="w-full">
-          {nombre}
-        </Button>
-      </div>
+      <ImgPerfil
+        src={student.imagen_url}
+        alt={`Avatar de ${student.nombre}`}
+        size="md"
+      />
+      <Button color="azul" onClick={handleClick} className="mt-2">
+        {student.nombre}
+      </Button>
     </div>
   );
 }
