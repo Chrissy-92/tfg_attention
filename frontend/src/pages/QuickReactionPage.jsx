@@ -1,9 +1,28 @@
-export default function ReaccionRapidaPage() {
+import Header from "../components/Header.jsx";
+import BottomContainer from "../components/BottomContainer.jsx";
+import { useNavigate } from "react-router-dom";
+
+export default function QuickReactionPage() {
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-100">
-      <h1 className="text-3xl font-bold text-gray-800">
-        Test de Reacción Rápida
-      </h1>
+    <div className="min-h-screen bg-green-200">
+      <Header
+        title="Reacción Rápida"
+        buttonLabel="Home"
+        onButtonClick={() => navigate("/dashboard-student")}
+      />
+
+      <BottomContainer>
+        <div className="bg-white p-6 rounded-2xl shadow w-full max-w-xl text-center">
+          <h2 className="text-xl font-semibold mb-4">
+            Aquí irá la lógica de la prueba
+          </h2>
+          <p className="text-gray-600">
+            Espacio reservado para el desarrollo futuro.
+          </p>
+        </div>
+      </BottomContainer>
     </div>
   );
 }

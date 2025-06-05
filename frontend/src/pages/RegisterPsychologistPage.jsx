@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { registrarUsuario } from "../services/api.js";
+import { registrarUsuario } from "../../services/api.js";
 import { useNavigate } from "react-router-dom";
-import Modal from "../components/PopupModal.jsx";
-import { useAuth } from "../hooks/useAuth.jsx";
+import { useAuth } from "../../hooks/useAuth.jsx";
+import PopupModal from "../PopupModal.jsx";
+import CardWhite from "../CardWhite.jsx";
+import Header from "../Header.jsx";
+import ImgPerfil from "../ImgPerfil.jsx";
 
-export default function RegistroPage() {
+export default function RegisterPsychologistPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -13,15 +16,18 @@ export default function RegistroPage() {
     password: "",
     imagen: null,
   });
-
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [modal, setModal] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    if (files) {
+      const file = files[0];
+      setFormData((prev) => ({ ...prev, [name]: file }));
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -29,7 +35,6 @@ export default function RegistroPage() {
     try {
       const { nombre, email, password } = formData;
       const response = await registrarUsuario({ nombre, email, password });
-      console.log("✅ Registro exitoso:", response);
       setModal({ tipo: "exito", mensaje: "Registro exitoso" });
       setTimeout(() => {
         setModal(null);
@@ -40,20 +45,38 @@ export default function RegistroPage() {
       const mensajeBackend = error.response?.data?.error?.includes("registrado")
         ? "Error de registro: Usuario ya registrado"
         : "Error en el registro";
-
-      console.error("❌ Error en el registro:", mensajeBackend);
       setModal({ tipo: "error", mensaje: mensajeBackend });
       setTimeout(() => setModal(null), 2500);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-200">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center mb-4">
-          Registro de Psicólogo
-        </h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+    <>
+      <Header
+        title="Registro Psicólogo"
+        buttonLabel="Home"
+        onButtonClick={() => navigate("/dashboard")}
+      />
+
+      <CardWhite>
+        <form className="space-y-4 w-full max-w-md" onSubmit={handleSubmit}>
+          <div className="flex justify-center">
+            <ImgPerfil src={previewUrl} />
+          </div>
+
+          <div className="flex justify-center">
+            <label className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+              Subir imagen
+              <input
+                type="file"
+                name="imagen"
+                accept="image/*"
+                onChange={handleChange}
+                className="hidden"
+              />
+            </label>
+          </div>
+
           <input
             type="text"
             name="nombre"
@@ -78,18 +101,7 @@ export default function RegistroPage() {
             onChange={handleChange}
             className="w-full px-4 py-2 border rounded-md"
           />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Imagen de perfil
-            </label>
-            <input
-              type="file"
-              name="imagen"
-              accept="image/*"
-              onChange={handleChange}
-              className="w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2"
-            />
-          </div>
+
           <button
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md"
@@ -97,15 +109,15 @@ export default function RegistroPage() {
             Registrarse
           </button>
         </form>
-      </div>
+      </CardWhite>
 
       {modal && (
-        <Modal
+        <PopupModal
           tipo={modal.tipo}
           mensaje={modal.mensaje}
           onClose={() => setModal(null)}
         />
       )}
-    </div>
+    </>
   );
 }

@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import Header from "../components/Header";
+import BottomContainer from "../components/BottomContainer";
+import { useNavigate } from "react-router-dom";
 
 const palabras = ["Rojo", "Verde", "Azul", "Amarillo"];
 const colores = ["red", "green", "blue", "yellow"];
@@ -10,6 +13,7 @@ function generarEstimulo() {
 }
 
 export default function StroopTestPage() {
+  const navigate = useNavigate();
   const [started, setStarted] = useState(false);
   const [estimulos, setEstimulos] = useState([]);
   const [indice, setIndice] = useState(0);
@@ -51,46 +55,56 @@ export default function StroopTestPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      {!started ? (
-        <button
-          onClick={() => setStarted(true)}
-          className="px-6 py-3 text-white bg-blue-600 rounded-2xl hover:bg-blue-700 transition"
-        >
-          Iniciar prueba Stroop
-        </button>
-      ) : finalizado ? (
-        <div>
-          <h2 className="text-xl font-bold mb-4">Prueba completada</h2>
-          <pre className="text-left text-sm bg-white p-4 rounded-xl shadow">
-            {JSON.stringify(respuestas, null, 2)}
-          </pre>
-        </div>
-      ) : (
-        <>
-          <p className="text-lg mb-2">
-            Estimulo {indice + 1} de {estimulos.length}
-          </p>
-          <h1
-            className="text-5xl font-bold mb-6"
-            style={{ color: estimulos[indice].color }}
-          >
-            {estimulos[indice].word}
-          </h1>
-          <div className="flex gap-4 justify-center">
-            {colores.map((c) => (
-              <button
-                key={c}
-                onClick={() => manejarRespuesta(c)}
-                className="px-5 py-2 rounded-xl text-white text-lg"
-                style={{ backgroundColor: c }}
+    <div className="min-h-screen bg-violet-300/50">
+      <Header
+        title="Tarea Stroop"
+        buttonLabel="Home"
+        onButtonClick={() => navigate("/dashboard-student")}
+      />
+
+      <BottomContainer>
+        <div className="w-full max-w-xl bg-white p-6 rounded-xl shadow text-center">
+          {!started ? (
+            <button
+              onClick={() => setStarted(true)}
+              className="px-6 py-3 text-white bg-blue-600 rounded-2xl hover:bg-blue-700 transition"
+            >
+              Iniciar prueba Stroop
+            </button>
+          ) : finalizado ? (
+            <div>
+              <h2 className="text-xl font-bold mb-4">Prueba completada</h2>
+              <pre className="text-left text-sm bg-gray-100 p-4 rounded-xl shadow-inner overflow-auto max-h-64">
+                {JSON.stringify(respuestas, null, 2)}
+              </pre>
+            </div>
+          ) : (
+            <>
+              <p className="text-lg mb-2">
+                Estímulo {indice + 1} de {estimulos.length}
+              </p>
+              <h1
+                className="text-5xl font-bold mb-6"
+                style={{ color: estimulos[indice].color }}
               >
-                {c}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
+                {estimulos[indice].word}
+              </h1>
+              <div className="flex gap-4 justify-center flex-wrap">
+                {colores.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => manejarRespuesta(c)}
+                    className="px-5 py-2 rounded-xl text-white text-lg"
+                    style={{ backgroundColor: c }}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </BottomContainer>
     </div>
   );
 }

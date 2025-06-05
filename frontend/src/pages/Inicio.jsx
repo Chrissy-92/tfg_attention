@@ -1,36 +1,29 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
+import CardWhite from "../components/CardWhite";
+import Button from "../components/Button";
 
 export default function Inicio() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-purple-200">
-      <div className="bg-gray-800 p-10 rounded-xl shadow-md text-center w-full max-w-md">
-        <h1 className="text-yellow-300 text-2xl font-semibold mb-6">
+    <div className="min-h-screen bg-violet-300/50 flex items-center justify-center px-4">
+      <CardWhite>
+        <h2 className="text-2xl font-semibold text-center mb-6">
           Selecciona tu perfil
-        </h1>
+        </h2>
+
         <div className="space-y-4">
-          <button
-            onClick={() => navigate("/login-alumno")}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
-          >
+          <Button color="verde" onClick={() => navigate("/login-alumno")}>
             Alumno
-          </button>
-          <button
-            onClick={() => navigate("/login-psicologo")}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
-          >
+          </Button>
+          <Button color="verde" onClick={() => navigate("/login-psicologo")}>
             Psicólogo
-          </button>
-          <button
-            onClick={() => navigate("/registro")}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full"
-          >
-            Regístrate
-          </button>
+          </Button>
+          <Button color="azul" onClick={() => navigate("/registro")}>
+            Registrarse
+          </Button>
         </div>
-      </div>
+      </CardWhite>
     </div>
   );
 }
