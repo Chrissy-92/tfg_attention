@@ -1,5 +1,4 @@
-// src/pages/Dashboard.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../services/api.js";
 import { useAuth } from "../hooks/useAuth.jsx";
 import { useNavigate } from "react-router-dom";

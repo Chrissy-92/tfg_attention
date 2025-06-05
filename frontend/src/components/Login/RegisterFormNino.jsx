@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { registrarUsuario } from "../services/api";
+import { registrarUsuario } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterFormNino() {

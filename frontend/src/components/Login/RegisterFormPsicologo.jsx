@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { registrarUsuario } from "../services/api";
+import { registrarUsuario } from "../../services/api";
 
 export default function RegisterForm() {
   const [form, setForm] = useState({
