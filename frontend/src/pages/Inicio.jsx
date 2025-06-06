@@ -7,7 +7,7 @@ export default function Inicio() {
 
   return (
     <div className="min-h-screen">
-      <BottomContainer>
+      <BottomContainer className="bg-gradient-to-br from-emerald-300 via-violet-300 to-pink-300">
         <div className="bg-white p-8 rounded-xl shadow-md flex flex-col items-center space-y-6 w-full max-w-sm">
           <h2 className="text-xl font-semibold text-gray-800">
             Selecciona tu perfil

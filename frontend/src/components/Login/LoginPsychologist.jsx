@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginPsychologist } from "../../services/api";
+import { useAuth } from "../../hooks/useAuth";
 import PopupModal from "../PopupModal";
 import ImgPerfil from "../ImgPerfil";
 import CardWhite from "../CardWhite";
@@ -8,6 +9,7 @@ import Button from "../Button";
 
 export default function LoginPsychologist() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [modal, setModal] = useState(null);
 
@@ -21,8 +23,8 @@ export default function LoginPsychologist() {
     try {
       const result = await loginPsychologist(form);
       console.log("✅ Login correcto:", result);
-      localStorage.setItem("token", result.token);
-      navigate("/dashboard");
+      login({ token: result.token, user: result.user });
+      navigate("/psychologist-dashboard");
     } catch (err) {
       console.error("❌ Error en login:", err);
       setModal({

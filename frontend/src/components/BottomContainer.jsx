@@ -1,6 +1,8 @@
-export default function BottomContainer({ children }) {
+export default function BottomContainer({ children, className = "" }) {
   return (
-    <div className="flex-1 min-h-[calc(100vh)] overflow-hidden p-6 bg-gradient-to-br from-cyan-200 via-violet-200 to-pink-300 flex justify-center items-center">
+    <div
+      className={`w-full h-[calc(100vh-64px)] flex justify-center items-center overflow-hidden ${className}`}
+    >
       {children}
     </div>
   );

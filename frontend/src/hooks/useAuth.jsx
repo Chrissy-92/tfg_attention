@@ -1,4 +1,3 @@
-// src/hooks/useAuth.jsx
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import { setAuthToken } from "../services/api.js";
