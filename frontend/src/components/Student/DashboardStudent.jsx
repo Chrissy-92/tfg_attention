@@ -3,6 +3,7 @@ import { useAuth } from "../../hooks/useAuth";
 import Header from "../Header";
 import Aside from "../Aside";
 import BottomContainer from "../BottomContainer";
+import ImgPerfil from "../ImgPerfil";
 
 export default function DashboardStudent() {
   const navigate = useNavigate();
@@ -14,13 +15,13 @@ export default function DashboardStudent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-violet-100">
       <Header title="Panel del Estudiante" />
       <div className="flex gap-4 px-4">
         <div className="w-72">
           <Aside
             nombre={user?.nombre}
-            avatar_url={user?.imagen_url}
+            avatar={<ImgPerfil src={user?.imagen_url} size="lg" />}
             descripcion={[
               "¡Bienvenido a tu espacio personal!",
               "Selecciona una prueba para comenzar.",

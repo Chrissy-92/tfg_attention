@@ -9,18 +9,25 @@ export default function StudentCard({ student, isSelected, onSelect }) {
   return (
     <div
       onClick={onSelect}
-      className={`border-4 rounded-xl p-4 text-center cursor-pointer transition-all ${
+      className={`bg-amber-50 border-4 rounded-xl p-5 cursor-pointer transition-all flex items-center justify-center w-40 h-full ${
         isSelected ? "border-amber-200" : "border-transparent"
       }`}
     >
-      <ImgPerfil
-        src={student.imagen_url}
-        alt={`Avatar de ${student.nombre}`}
-        size="md"
-      />
-      <Button color="azul" onClick={handleClick} className="mt-2">
-        {student.nombre}
-      </Button>
+      <div className="flex flex-col items-center space-y-2">
+        <ImgPerfil
+          src={student.imagen_url}
+          alt={`Avatar de ${student.nombre}`}
+          size="md"
+        />
+        <Button
+          color="azul"
+          onClick={handleClick}
+          className="px-4 py-2 min-w-[120px] text-sm truncate"
+          title={student.nombre}
+        >
+          {student.nombre}
+        </Button>
+      </div>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import ImgPerfil from "../ImgPerfil";
 import CardWhite from "../CardWhite";
 import Button from "../Button";
 import Header from "../Header";
+import BottomContainer from "../BottomContainer";
 
 export default function LoginPsychologist() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function LoginPsychologist() {
   return (
     <>
       <Header title="TFG_Attention" />
-      <div className="min-h-screen flex items-center justify-center bg-slate-200">
+      <BottomContainer className="bg-gradient-to-br from-emerald-300 via-violet-300 to-pink-300">
         <CardWhite>
           <ImgPerfil
             src={user?.avatar_url || "/user_default.jpg"}
@@ -73,7 +74,7 @@ export default function LoginPsychologist() {
             </Button>
           </form>
         </CardWhite>
-      </div>
+      </BottomContainer>
 
       {modal && (
         <PopupModal

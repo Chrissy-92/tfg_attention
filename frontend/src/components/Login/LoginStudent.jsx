@@ -7,6 +7,7 @@ import PopupModal from "../PopupModal";
 import CardWhite from "../CardWhite";
 import Button from "../Button";
 import Header from "../Header";
+import BottomContainer from "../BottomContainer";
 
 export default function LoginStudent() {
   const [nombre, setNombre] = useState("");
@@ -19,11 +20,11 @@ export default function LoginStudent() {
     e.preventDefault();
     try {
       const res = await api.post("/alumnos/login", { nombre, password });
-      login({ token: res.data.token, user: res.data.user });
-      if (res.data.user.needsActivation) {
-        navigate(`/activar-perfil/${res.data.user.id_nino}`);
+      login({ token: res.data.token, user: res.data });
+      if (res.data.needsActivation) {
+        navigate(`/activar-perfil/${res.data.id_nino}`);
       } else {
-        navigate("/dashboard-student");
+        navigate("/student-dashboard");
       }
     } catch (err) {
       setModal({
@@ -37,9 +38,9 @@ export default function LoginStudent() {
   return (
     <>
       <Header title="TFG_Attention" />
-      <div className="min-h-screen flex items-center justify-center bg-slate-200">
+      <BottomContainer className="bg-gradient-to-br from-emerald-300 via-violet-300 to-pink-300">
         <CardWhite>
-          <ImgPerfil url="/avatars/user_default.jpg" />
+          <ImgPerfil />
           <h2 className="text-xl font-semibold text-center mb-4">
             Login Alumno
           </h2>
@@ -75,7 +76,7 @@ export default function LoginStudent() {
             />
           )}
         </CardWhite>
-      </div>
+      </BottomContainer>
     </>
   );
 }
