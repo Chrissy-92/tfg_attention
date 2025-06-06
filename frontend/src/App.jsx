@@ -26,9 +26,6 @@ import StudentFormAdd from "./components/Psychologist/StudentFormAdd.jsx";
 // Student
 import DashboardStudent from "./components/Student/DashboardStudent.jsx";
 
-// Global
-import Header from "./components/Header.jsx";
-
 // Auth
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
 
@@ -41,7 +38,6 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <Header title="TFG Atención Infantil" />
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/login-psychologist" element={<LoginPsychologist />} />

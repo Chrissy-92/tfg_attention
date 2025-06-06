@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { createUser, findUserByEmail } from "../models/usuario.model.js";
 
 export async function register(req, res) {
-  const { nombre, email, password, rol, avatar_url } = req.body;
+  const { nombre, email, password, rol } = req.body;
 
   try {
     if (await findUserByEmail(email)) {
@@ -11,6 +11,11 @@ export async function register(req, res) {
     }
 
     const hash = await bcrypt.hash(password, 10);
+
+    const avatar_url = req.file
+      ? `/uploads/${req.file.filename}`
+      : "/uploads/user_default.jpg";
+
     const user = await createUser({
       nombre,
       email,

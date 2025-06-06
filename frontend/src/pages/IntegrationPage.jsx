@@ -29,7 +29,7 @@ export default function IntegrationPage() {
       <Header
         title="Informe de Integración"
         buttonLabel="Home"
-        onButtonClick={() => navigate("/dashboard")}
+        onButtonClick={() => navigate("/psychologist-dashboard")}
       />
 
       <div className="flex gap-4 px-4">

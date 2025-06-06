@@ -6,6 +6,7 @@ import ImgPerfil from "../ImgPerfil";
 import PopupModal from "../PopupModal";
 import CardWhite from "../CardWhite";
 import Button from "../Button";
+import Header from "../Header";
 
 export default function LoginStudent() {
   const [nombre, setNombre] = useState("");
@@ -34,39 +35,47 @@ export default function LoginStudent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-200">
-      <CardWhite>
-        <ImgPerfil url="/avatars/user_default.jpg" />
-        <h2 className="text-xl font-semibold text-center mb-4">Login Alumno</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Nombre completo"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md"
-            required
-          />
-          <Button type="submit" color="verde" full>
-            Entrar
-          </Button>
-        </form>
-        {modal && (
-          <PopupModal
-            tipo={modal.tipo}
-            mensaje={modal.mensaje}
-            onClose={() => setModal(null)}
-          />
-        )}
-      </CardWhite>
-    </div>
+    <>
+      <Header title="TFG_Attention" />
+      <div className="min-h-screen flex items-center justify-center bg-slate-200">
+        <CardWhite>
+          <ImgPerfil url="/avatars/user_default.jpg" />
+          <h2 className="text-xl font-semibold text-center mb-4">
+            Login Alumno
+          </h2>
+          <form
+            onSubmit={handleSubmit}
+            className="w-full space-y-4 flex flex-col items-center"
+          >
+            <input
+              type="text"
+              placeholder="Nombre completo"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+            <Button type="submit" color="verde" full>
+              Entrar
+            </Button>
+          </form>
+          {modal && (
+            <PopupModal
+              tipo={modal.tipo}
+              mensaje={modal.mensaje}
+              onClose={() => setModal(null)}
+            />
+          )}
+        </CardWhite>
+      </div>
+    </>
   );
 }

@@ -17,6 +17,7 @@ import alumnosRoutes from "./routes/alumnos.routes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 // Verificación de variables de entorno críticas
 if (!process.env.JWT_SECRET || !process.env.DB_HOST || !process.env.DB_NAME) {

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Button from "./Button";
 
-export default function Header({ title, buttonLabel = "Home", customAction }) {
+export default function Header({ title, buttonLabel, customAction }) {
   const navigate = useNavigate();
   const { user } = useAuth();
 

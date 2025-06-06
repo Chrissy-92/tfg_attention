@@ -1,9 +1,9 @@
-export default function CardWhite({ children, className = "" }) {
+export default function CardWhite({ children }) {
   return (
-    <div
-      className={`bg-white p-6 rounded-xl shadow-lg w-full max-w-md ${className}`}
-    >
-      {children}
+    <div className="bg-white rounded shadow p-6 w-full max-w-md">
+      <div className="flex flex-col items-center justify-center w-full">
+        {children}
+      </div>
     </div>
   );
 }

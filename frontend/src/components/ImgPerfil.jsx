@@ -16,7 +16,7 @@ export default function ImgPerfil({
     ? "border-4 border-blue-600"
     : "border border-gray-300";
 
-  const imagenFinal = src || "/user_default.jpg";
+  const imagenFinal = src?.trim() ? src : "/user_default.jpg";
 
   return (
     <img

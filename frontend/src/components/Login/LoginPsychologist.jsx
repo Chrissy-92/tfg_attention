@@ -6,10 +6,11 @@ import PopupModal from "../PopupModal";
 import ImgPerfil from "../ImgPerfil";
 import CardWhite from "../CardWhite";
 import Button from "../Button";
+import Header from "../Header";
 
 export default function LoginPsychologist() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [modal, setModal] = useState(null);
 
@@ -36,11 +37,19 @@ export default function LoginPsychologist() {
 
   return (
     <>
-      <CardWhite>
-        <div className="flex flex-col items-center space-y-4">
-          <ImgPerfil src="/logo.png" alt="Logo" className="w-24 h-24" />
+      <Header title="TFG_Attention" />
+      <div className="min-h-screen flex items-center justify-center bg-slate-200">
+        <CardWhite>
+          <ImgPerfil
+            src={user?.avatar_url || "/user_default.jpg"}
+            alt="Avatar"
+            className="w-24 h-24"
+          />
           <h2 className="text-xl font-semibold">Login Psicólogo</h2>
-          <form onSubmit={handleSubmit} className="w-full space-y-4">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full space-y-4 flex flex-col items-center"
+          >
             <input
               type="email"
               name="email"
@@ -63,8 +72,8 @@ export default function LoginPsychologist() {
               Entrar
             </Button>
           </form>
-        </div>
-      </CardWhite>
+        </CardWhite>
+      </div>
 
       {modal && (
         <PopupModal

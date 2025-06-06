@@ -15,12 +15,7 @@ export default function DashboardStudent() {
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <Header
-        title="Panel del Estudiante"
-        buttonLabel="Home"
-        onButtonClick={() => navigate("/student-dashboard")}
-      />
-
+      <Header title="Panel del Estudiante" />
       <div className="flex gap-4 px-4">
         <div className="w-72">
           <Aside

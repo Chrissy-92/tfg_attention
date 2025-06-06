@@ -16,12 +16,21 @@ export function setAuthToken(token) {
 }
 
 // Función para registrar usuario
-export async function registrarUsuario({ nombre, email, password }) {
-  const response = await api.post("/auth/register", {
-    nombre,
-    email,
-    password,
+export async function registrarUsuario({ nombre, email, password, imagen }) {
+  const formData = new FormData();
+  formData.append("nombre", nombre);
+  formData.append("email", email);
+  formData.append("password", password);
+  if (imagen) {
+    formData.append("imagen", imagen); // clave debe coincidir con req.file
+  }
+
+  const response = await api.post("/auth/register", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
+
   return response.data;
 }
 
