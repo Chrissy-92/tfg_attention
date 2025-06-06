@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUsuario } from "../../services/api";
+import { loginPsychologist } from "../../services/api";
 import PopupModal from "../PopupModal";
 import ImgPerfil from "../ImgPerfil";
 import CardWhite from "../CardWhite";
@@ -19,7 +19,7 @@ export default function LoginPsychologist() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await loginUsuario(form);
+      const result = await loginPsychologist(form);
       console.log("✅ Login correcto:", result);
       localStorage.setItem("token", result.token);
       navigate("/dashboard");

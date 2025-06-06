@@ -1,114 +1,101 @@
 import { useState } from "react";
-import { registrarUsuario } from "../../services/api.js";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth.jsx";
-import PopupModal from "../PopupModal.jsx";
-import CardWhite from "../CardWhite.jsx";
-import Header from "../Header.jsx";
-import ImgPerfil from "../ImgPerfil.jsx";
+import { registrarUsuario, loginPsychologist } from "../services/api.js";
+import PopupModal from "../components/PopupModal.jsx";
+import ImgPerfil from "../components/ImgPerfil.jsx";
+import CardWhite from "../components/CardWhite.jsx";
+import Button from "../components/Button.jsx";
 
 export default function RegisterPsychologistPage() {
-  const { login } = useAuth();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     nombre: "",
     email: "",
     password: "",
     imagen: null,
   });
-  const [previewUrl, setPreviewUrl] = useState(null);
   const [modal, setModal] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
-      const file = files[0];
-      setFormData((prev) => ({ ...prev, [name]: file }));
-      setPreviewUrl(URL.createObjectURL(file));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setForm((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { nombre, email, password } = formData;
+      const { nombre, email, password } = form;
       const response = await registrarUsuario({ nombre, email, password });
       setModal({ tipo: "exito", mensaje: "Registro exitoso" });
+
       setTimeout(() => {
         setModal(null);
-        login({ token: response.token, user: response.user });
+        loginPsychologist({ email, password });
         navigate("/dashboard");
       }, 2500);
     } catch (error) {
       const mensajeBackend = error.response?.data?.error?.includes("registrado")
         ? "Error de registro: Usuario ya registrado"
         : "Error en el registro";
+
       setModal({ tipo: "error", mensaje: mensajeBackend });
       setTimeout(() => setModal(null), 2500);
     }
   };
 
   return (
-    <>
-      <Header
-        title="Registro Psicólogo"
-        buttonLabel="Home"
-        onButtonClick={() => navigate("/dashboard")}
-      />
-
+    <div className="min-h-screen flex items-center justify-center bg-slate-200">
       <CardWhite>
-        <form className="space-y-4 w-full max-w-md" onSubmit={handleSubmit}>
-          <div className="flex justify-center">
-            <ImgPerfil src={previewUrl} />
-          </div>
-
-          <div className="flex justify-center">
-            <label className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-              Subir imagen
+        <div className="flex flex-col items-center space-y-4">
+          <ImgPerfil src="/user_default.jpg" alt="Preview" />
+          <form onSubmit={handleSubmit} className="w-full space-y-4">
+            <input
+              type="text"
+              name="nombre"
+              placeholder="Nombre completo"
+              value={form.nombre}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Correo electrónico"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md"
+              required
+            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Imagen de perfil
+              </label>
               <input
                 type="file"
                 name="imagen"
                 accept="image/*"
                 onChange={handleChange}
-                className="hidden"
+                className="w-full text-sm text-gray-700 border border-gray-300 rounded-md p-2 cursor-pointer file:cursor-pointer"
               />
-            </label>
-          </div>
-
-          <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre completo"
-            value={formData.nombre}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Correo electrónico"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border rounded-md"
-          />
-
-          <button
-            type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md"
-          >
-            Registrarse
-          </button>
-        </form>
+            </div>
+            <Button type="submit" color="verde">
+              Registrarse
+            </Button>
+          </form>
+        </div>
       </CardWhite>
 
       {modal && (
@@ -118,6 +105,6 @@ export default function RegisterPsychologistPage() {
           onClose={() => setModal(null)}
         />
       )}
-    </>
+    </div>
   );
 }

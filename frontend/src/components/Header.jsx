@@ -14,7 +14,7 @@ export default function Header({ title, buttonLabel = "Home", customAction }) {
   };
 
   return (
-    <header className="w-full border-b border-violet-500 mb-6">
+    <header className="w-full bg-indigo-300 text-white border-b border-indigo-500">
       <div className="flex items-center justify-between px-4 py-4">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="Logo" className="w-10 h-10" />

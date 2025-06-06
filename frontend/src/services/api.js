@@ -25,6 +25,15 @@ export async function registrarUsuario({ nombre, email, password }) {
   return response.data;
 }
 
+// Función para loguear psicólogo
+export async function loginPsychologist({ email, password }) {
+  const response = await api.post("/auth/login", {
+    email,
+    password,
+  });
+  return response.data;
+}
+
 // Función para loguear niño
 export async function loginAlumno({ nombre, password }) {
   const response = await api.post("/alumnos/login", {

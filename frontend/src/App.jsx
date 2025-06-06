@@ -20,11 +20,11 @@ import LoginStudent from "./components/Login/LoginStudent.jsx";
 import ActivateStudentProfile from "./components/Login/ActivateStudentProfile.jsx";
 
 // Psychologist
-import PsychologistDashboard from "./components/Psychologist/PsychologistDashboard.jsx";
+import DashboardPsychologist from "./pages/DashboardPsychologist.jsx";
 import StudentFormAdd from "./components/Psychologist/StudentFormAdd.jsx";
 
 // Student
-import StudentDashboard from "./components/Student/StudentDashboard.jsx";
+import DashboardStudent from "./components/Student/DashboardStudent.jsx";
 
 // Global
 import Header from "./components/Header.jsx";
@@ -73,7 +73,7 @@ export default function App() {
             path="/psychologist-dashboard"
             element={
               <PrivateRoute>
-                <PsychologistDashboard />
+                <DashboardPsychologist />
               </PrivateRoute>
             }
           />
@@ -83,7 +83,7 @@ export default function App() {
             path="/student-dashboard"
             element={
               <PrivateRoute>
-                <StudentDashboard />
+                <DashboardStudent />
               </PrivateRoute>
             }
           />

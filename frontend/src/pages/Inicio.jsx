@@ -1,29 +1,33 @@
 import { useNavigate } from "react-router-dom";
-import CardWhite from "../components/CardWhite";
 import Button from "../components/Button";
+import BottomContainer from "../components/BottomContainer";
 
 export default function Inicio() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-violet-300/50 flex items-center justify-center px-4">
-      <CardWhite>
-        <h2 className="text-2xl font-semibold text-center mb-6">
-          Selecciona tu perfil
-        </h2>
-
-        <div className="space-y-4">
-          <Button color="verde" onClick={() => navigate("/login-alumno")}>
-            Alumno
-          </Button>
-          <Button color="verde" onClick={() => navigate("/login-psicologo")}>
-            Psicólogo
-          </Button>
-          <Button color="azul" onClick={() => navigate("/registro")}>
-            Registrarse
-          </Button>
+    <div className="min-h-screen">
+      <BottomContainer>
+        <div className="bg-white p-8 rounded-xl shadow-md flex flex-col items-center space-y-6 w-full max-w-sm">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Selecciona tu perfil
+          </h2>
+          <div className="flex flex-col gap-4 w-full">
+            <Button color="verde" onClick={() => navigate("/login-student")}>
+              Alumno
+            </Button>
+            <Button
+              color="verde"
+              onClick={() => navigate("/login-psychologist")}
+            >
+              Psicólogo
+            </Button>
+            <Button color="azul" onClick={() => navigate("/register")}>
+              Registrarse
+            </Button>
+          </div>
         </div>
-      </CardWhite>
+      </BottomContainer>
     </div>
   );
 }

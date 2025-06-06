@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Header from "../components/Header";
 import BottomContainer from "../components/BottomContainer";
-import StudentCard from "../components/Psychologist/DashboardPsychologist/StudentCard";
+import StudentCard from "../components/Psychologist/StudentCard";
 
 export default function DashboardPsychologist() {
   const [students, setStudents] = useState([]);

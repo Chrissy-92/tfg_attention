@@ -1,5 +1,5 @@
-import ImgPerfil from "../../ImgPerfil";
-import Button from "../../Button";
+import ImgPerfil from "../ImgPerfil";
+import Button from "../Button";
 import { useNavigate } from "react-router-dom";
 
 export default function StudentCard({ student, isSelected, onSelect }) {

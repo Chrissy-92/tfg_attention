@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import api from "../../services/api.js";
-import { useAuth } from "../../hooks/useAuth.jsx";
-import BottomContainer from "../BottomContainer.jsx";
-import ImgPerfil from "../ImgPerfil.jsx";
-import Header from "../Header.jsx";
-import CardWhite from "../CardWhite.jsx";
+import api from "../services/api.js";
+import { useAuth } from "../hooks/useAuth.jsx";
+import BottomContainer from "../components/BottomContainer.jsx";
+import ImgPerfil from "../components/ImgPerfil.jsx";
+import Header from "../components/Header.jsx";
+import CardWhite from "../components/CardWhite.jsx";
 
 export default function StudentsPage() {
   const { token } = useAuth();
