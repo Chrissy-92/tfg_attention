@@ -22,7 +22,7 @@ export default function LoginStudent() {
       const res = await api.post("/alumnos/login", { nombre, password });
       login({ token: res.data.token, user: res.data });
       if (res.data.needsActivation) {
-        navigate(`/activar-perfil/${res.data.id_nino}`);
+        navigate(`/activate-profile/${res.data.id_nino}`);
       } else {
         navigate("/student-dashboard");
       }

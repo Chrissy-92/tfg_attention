@@ -25,8 +25,8 @@ export async function loginAlumno(req, res) {
     res.json({
       id_nino: nino.id_nino,
       nombre: nino.nombre,
-      imagen_url: nino.imagen_url,
-      cambio_requerido: esTemporal,
+      avatar_url: nino.imagen_url,
+      needsActivation: esTemporal,
     });
   } catch (err) {
     console.error("Error en loginAlumno:", err);
