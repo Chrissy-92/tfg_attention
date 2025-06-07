@@ -40,19 +40,19 @@ export default function IntegrationPage() {
   }, [id_student]);
 
   return (
-    <div className="min-h-screen bg-violet-300/50">
+    <div className="min-h-screen bg-violet-300/50 flex flex-col">
       <Header
         title="Informe de Integración"
         buttonLabel="Home"
         onButtonClick={() => navigate("/psychologist-dashboard")}
       />
 
-      <div className="flex gap-4 px-4">
-        <div className="w-72">
+      <main className="flex justify-center items-center gap-72 mx-5 h-[calc(100vh-80px)]">
+        <div className="w-80">
           <Aside student={student} modo="integration" />
         </div>
         <div className="flex-1 max-w-3xl flex flex-col">
-          <BottomContainer>
+          <BottomContainer className="w-[900px] max-h-[600px] overflow-auto items-start">
             <section className="bg-white p-6 rounded-lg shadow w-full">
               {loading && <p>Cargando informe...</p>}
               {!loading && error && <p className="text-red-500">{error}</p>}
@@ -76,20 +76,20 @@ export default function IntegrationPage() {
                   </p>
                 </div>
               )}
-              <div className="flex justify-end pt-6">
-                <Button
-                  color="rojo"
-                  onClick={() => {
-                    logout();
-                    navigate("/");
-                  }}
-                >
-                  Cerrar Sesión
-                </Button>
-              </div>
             </section>
           </BottomContainer>
         </div>
+      </main>
+      <div className="fixed px-3 bottom-7 right-6 z-50">
+        <Button
+          color="rojo"
+          onClick={() => {
+            logout();
+            navigate("/");
+          }}
+        >
+          Cerrar Sesión
+        </Button>
       </div>
     </div>
   );

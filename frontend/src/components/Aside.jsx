@@ -28,35 +28,43 @@ export default function Aside({
         ];
 
   return (
-    <aside className="w-full md:max-w-xs rounded-2xl border border-slate-400 p-6 flex flex-col items-center gap-4">
+    <aside className="w-full md:w-[340px] min-h-[620px] bg-white p-6 rounded-2xl border border-slate-300 flex flex-col items-center gap-4 text-[17px] shadow-lg justify-center">
       <ImgPerfil
         src={student.avatar_url || student.imagen_url || "/user_default.jpg"}
         alt={`Avatar de ${student.nombre}`}
-        size="md"
+        size="lg"
       />
 
-      <div className="w-full text-left space-y-2">
-        <p className="text-xl font-semibold">{student.nombre}</p>
+      <div className=" leading-relaxed tracking-normal space-y-2 gap-24">
+        <p className="text-2xl font-semibold">{student.nombre}</p>
 
         {modo === "integration" && (
           <>
-            <p className="text-sm text-gray-700">Edad: {student.edad}</p>
-            <p className="text-sm text-gray-700">Padre: {student.padre}</p>
-            <p className="text-sm text-gray-700">Madre: {student.madre}</p>
-            <p className="text-sm text-gray-700">
-              Email tutores: {student.email_tutores}
+            <p>
+              <span className="font-semibold">Edad:</span> {student.edad}
             </p>
-            <p className="text-sm text-gray-700">
-              Teléfono: {student.telefono}
+            <p>
+              <span className="font-semibold">Padre:</span> {student.padre}
+            </p>
+            <p>
+              <span className="font-semibold">Madre:</span> {student.madre}
+            </p>
+            <p>
+              <span className="font-semibold">Email tutores: </span>
+              {student.email_tutores}
+            </p>
+            <p>
+              <span className="font-semibold">Teléfono: </span>
+              {student.telefono}
             </p>
           </>
         )}
 
-        {descripcion.map((texto, idx) => (
-          <p key={idx} className="text-sm text-gray-700">
-            {texto}
-          </p>
-        ))}
+        <div className="mt-4 italic space-y-5">
+          {descripcion.map((texto, idx) => (
+            <p key={idx}>{texto}</p>
+          ))}
+        </div>
       </div>
 
       {buttonLabel && onButtonClick && (
