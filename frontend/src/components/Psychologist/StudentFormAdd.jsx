@@ -4,6 +4,8 @@ import CardWhite from "../CardWhite.jsx";
 import ImgPerfil from "../ImgPerfil.jsx";
 import Button from "../Button.jsx";
 import Header from "../Header.jsx";
+import BottomContainer from "../BottomContainer.jsx";
+import PopUpModal from "../PopupModal.jsx";
 
 export default function StudentFormAdd({ onSubmit }) {
   const navigate = useNavigate();
@@ -17,15 +19,27 @@ export default function StudentFormAdd({ onSubmit }) {
     madre: "",
     telefono: "",
     email_tutores: "",
-    avatar_url: "/avatars/user_default.jpg",
+    avatar_url: "/user_default.jpg",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => {
+      const updated = { ...prev, [name]: value };
+
+      if (name === "fecha_nacimiento") {
+        const hoy = new Date();
+        const nacimiento = new Date(value);
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const m = hoy.getMonth() - nacimiento.getMonth();
+        if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+          edad--;
+        }
+        updated.edad = edad;
+      }
+
+      return updated;
+    });
   };
 
   const handleSubmit = (e) => {
@@ -34,16 +48,19 @@ export default function StudentFormAdd({ onSubmit }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <>
       <Header
         title="Añadir nuevo estudiante"
         buttonLabel="Home"
-        onButtonClick={() => navigate("/dashboard")}
+        onButtonClick={() => navigate("/psychologist-dashboard")}
       />
 
-      <div className="flex items-center justify-center">
+      <BottomContainer className="bg-gradient-to-br from-emerald-300 via-violet-300 to-pink-300">
         <CardWhite>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 flex flex-col items-center"
+          >
             <ImgPerfil src={form.avatar_url} alt="Avatar niño" />
             <input
               type="text"
@@ -51,30 +68,32 @@ export default function StudentFormAdd({ onSubmit }) {
               placeholder="Nombre completo"
               value={form.nombre}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
             <input
               type="date"
               name="fecha_nacimiento"
               value={form.fecha_nacimiento}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
-            <input
-              type="text"
+            <select
               name="genero"
-              placeholder="Género"
               value={form.genero}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
-            />
+              className="w-80 max-w-full px-4 py-2 border rounded-md"
+            >
+              <option value="">Selecciona género</option>
+              <option value="masculino">Masculino</option>
+              <option value="femenino">Femenino</option>
+            </select>
             <input
               type="number"
               name="edad"
               placeholder="Edad"
               value={form.edad}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
             <input
               type="text"
@@ -82,7 +101,7 @@ export default function StudentFormAdd({ onSubmit }) {
               placeholder="Nombre del padre"
               value={form.padre}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
             <input
               type="text"
@@ -90,7 +109,7 @@ export default function StudentFormAdd({ onSubmit }) {
               placeholder="Nombre de la madre"
               value={form.madre}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
             <input
               type="tel"
@@ -98,7 +117,7 @@ export default function StudentFormAdd({ onSubmit }) {
               placeholder="Teléfono"
               value={form.telefono}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
             <input
               type="email"
@@ -106,14 +125,23 @@ export default function StudentFormAdd({ onSubmit }) {
               placeholder="Email de contacto"
               value={form.email_tutores}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
-            <Button color="azul" type="submit">
-              Guardar estudiante
-            </Button>
+            <div className="flex gap-4 justify-center mt-7">
+              <Button color="azul" type="submit">
+                Guardar estudiante
+              </Button>
+              <Button
+                color="violeta"
+                type="button"
+                onClick={() => navigate("/integration")}
+              >
+                Consultar Informe
+              </Button>
+            </div>
           </form>
         </CardWhite>
-      </div>
-    </div>
+      </BottomContainer>
+    </>
   );
 }

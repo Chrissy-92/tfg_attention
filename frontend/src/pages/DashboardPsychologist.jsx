@@ -34,7 +34,7 @@ export default function DashboardPsychologist() {
       <Header
         title="Panel del Psicólogo"
         buttonLabel="Añadir Estudiante"
-        onButtonClick={() => navigate("/students/new")}
+        onButtonClick={() => navigate("/students-new")}
       />
 
       <BottomContainer className="bg-violet-200">

@@ -7,6 +7,7 @@ const AuthContext = createContext();
 //AuthProvider: componente que envuelve la App y gestiona el estado de autenticación (token + usuario).
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem("auth");
@@ -14,6 +15,9 @@ export function AuthProvider({ children }) {
       const { token, user } = JSON.parse(stored);
       setAuthToken(token);
       setUser(user);
+      setLoading(false);
+    } else {
+      setLoading(false);
     }
   }, []);
 
@@ -30,7 +34,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

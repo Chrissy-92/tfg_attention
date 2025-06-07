@@ -5,24 +5,39 @@ import { useAuth } from "../hooks/useAuth.jsx";
 import Header from "../components/Header";
 import Aside from "../components/Aside";
 import BottomContainer from "../components/BottomContainer";
+import Button from "../components/Button.jsx";
 
 export default function IntegrationPage() {
-  const { id_nino } = useParams();
+  const { id_student } = useParams();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const [data, setData] = useState(null);
+  const { logout } = useAuth();
+
+  const [data, setData] = useState(null); // datos de integración
+  const [student, setStudent] = useState(null); // datos del alumno
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Obtener informe de integración
   useEffect(() => {
     api
-      .get(`/integracion/${id_nino}`)
+      .get(`/integracion/${id_student}`)
       .then((res) => setData(res.data))
       .catch((err) =>
-        setError(err.response?.data?.message || "Error al cargar informe")
+        setError(err.response?.data?.message || "No hay informe disponible.")
       )
       .finally(() => setLoading(false));
-  }, [id_nino]);
+  }, [id_student]);
+
+  // Obtener datos del estudiante
+  useEffect(() => {
+    api
+      .get("/ninos")
+      .then((res) => {
+        const match = res.data.find((n) => n.id_nino === Number(id_student));
+        setStudent(match);
+      })
+      .catch((err) => console.error("Error al cargar estudiante:", err));
+  }, [id_student]);
 
   return (
     <div className="min-h-screen bg-violet-300/50">
@@ -34,28 +49,14 @@ export default function IntegrationPage() {
 
       <div className="flex gap-4 px-4">
         <div className="w-72">
-          <Aside
-            nombre={user?.nombre}
-            avatar_url={user?.imagen_url}
-            descripcion={[
-              "Este informe resume el desempeño del estudiante.",
-              "Puedes revisar el percentil global obtenido.",
-            ]}
-            buttonLabel="Cerrar sesión"
-            onButtonClick={() => {
-              logout();
-              navigate("/");
-            }}
-            buttonColor="rojo"
-          />
+          <Aside student={student} modo="integration" />
         </div>
-
-        <div className="flex-1 max-w-3xl">
+        <div className="flex-1 max-w-3xl flex flex-col">
           <BottomContainer>
             <section className="bg-white p-6 rounded-lg shadow w-full">
               {loading && <p>Cargando informe...</p>}
-              {error && <p className="text-red-500">{error}</p>}
-              {data && (
+              {!loading && error && <p className="text-red-500">{error}</p>}
+              {!loading && data && (
                 <div className="space-y-4">
                   <p>
                     <span className="font-semibold">ID Integración:</span>{" "}
@@ -75,6 +76,17 @@ export default function IntegrationPage() {
                   </p>
                 </div>
               )}
+              <div className="flex justify-end pt-6">
+                <Button
+                  color="rojo"
+                  onClick={() => {
+                    logout();
+                    navigate("/");
+                  }}
+                >
+                  Cerrar Sesión
+                </Button>
+              </div>
             </section>
           </BottomContainer>
         </div>

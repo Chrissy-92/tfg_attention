@@ -13,6 +13,7 @@ import CancellationPage from "./pages/CancellationPage.jsx";
 import QuickReactionPage from "./pages/QuickReactionPage.jsx";
 import WorkingMemoryPage from "./pages/WorkingMemoryPage.jsx";
 import StudentsPage from "./pages/StudentsPage.jsx";
+import IntegrationPage from "./pages/IntegrationPage.jsx";
 
 // Login
 import LoginPsychologist from "./components/Login/LoginPsychologist.jsx";
@@ -28,13 +29,26 @@ import DashboardStudent from "./components/Student/DashboardStudent.jsx";
 
 // Auth
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
+import api from "./services/api.js";
 
 function PrivateRoute({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  console.log("PrivateRoute → user:", user);
+  if (loading) return null;
+
   return user ? children : <Navigate to="/login" replace />;
 }
 
 export default function App() {
+  const handleCrearEstudiante = async (form) => {
+    try {
+      const res = await api.post("/ninos", form);
+      console.log("✅ Niño creado:", res.data);
+    } catch (err) {
+      console.error("❌ Error al crear estudiante:", err);
+    }
+  };
+
   return (
     <AuthProvider>
       <Router>
@@ -58,10 +72,18 @@ export default function App() {
             }
           />
           <Route
-            path="/students/new"
+            path="/students-new"
             element={
               <PrivateRoute>
-                <StudentFormAdd />
+                <StudentFormAdd onSubmit={handleCrearEstudiante} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/integration/:id_student"
+            element={
+              <PrivateRoute>
+                <IntegrationPage />
               </PrivateRoute>
             }
           />

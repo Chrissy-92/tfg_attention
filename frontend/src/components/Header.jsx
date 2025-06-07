@@ -2,15 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Button from "./Button";
 
-export default function Header({ title, buttonLabel, customAction }) {
+export default function Header({ title, buttonLabel, onButtonClick }) {
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const handleClick = () => {
-    if (customAction) return customAction();
-    if (!user) return navigate("/");
-    if (user.rol === "alumno") return navigate("/dashboard-alumno");
-    return navigate("/");
+    if (onButtonClick) return onButtonClick();
   };
 
   return (

@@ -40,7 +40,8 @@ export async function createNino({
 // Listar niños por psicólogo
 export async function listNinosByUsuario(id_usuario) {
   const { rows } = await pool.query(
-    `SELECT id_nino, nombre, edad, genero, imagen_url
+    `SELECT id_nino, nombre, edad, genero, imagen_url, 
+            padre, madre, telefono, email_tutores
      FROM ninos
      WHERE id_usuario = $1
      ORDER BY nombre`,

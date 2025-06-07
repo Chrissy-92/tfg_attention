@@ -3,7 +3,6 @@ import { useAuth } from "../../hooks/useAuth";
 import Header from "../Header";
 import Aside from "../Aside";
 import BottomContainer from "../BottomContainer";
-import ImgPerfil from "../ImgPerfil";
 
 export default function DashboardStudent() {
   const navigate = useNavigate();
@@ -20,15 +19,11 @@ export default function DashboardStudent() {
       <div className="flex gap-4 px-4">
         <div className="w-72">
           <Aside
-            nombre={user?.nombre}
-            avatar={<ImgPerfil src={user?.imagen_url} size="lg" />}
-            descripcion={[
-              "¡Bienvenido a tu espacio personal!",
-              "Selecciona una prueba para comenzar.",
-            ]}
-            buttonLabel="Cerrar sesión"
-            onButtonClick={handleLogout}
-            buttonColor="rojo"
+            student={user}
+            modo="student-dashboard"
+            buttonLabel="Editar Perfil"
+            buttonColor="azul"
+            onButtonClick={() => navigate("/register-student")}
           />
         </div>
 

@@ -4,12 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 export default function StudentCard({ student, isSelected, onSelect }) {
   const navigate = useNavigate();
-  const handleClick = () => navigate(`/integracion/${student.id_nino}`);
+  const handleClick = () => {
+    onSelect?.();
+    navigate(`/integration/${student.id_nino}`);
+  };
 
   return (
     <div
       onClick={onSelect}
-      className={`bg-amber-50 border-4 rounded-xl p-5 cursor-pointer transition-all flex items-center justify-center w-40 h-full ${
+      className={`bg-green-50 border-4 rounded-xl cursor-pointer transition-all flex items-center justify-center w-40 h-52 ${
         isSelected ? "border-amber-200" : "border-transparent"
       }`}
     >
