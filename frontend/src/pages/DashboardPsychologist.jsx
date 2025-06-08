@@ -38,8 +38,8 @@ export default function DashboardPsychologist() {
       />
 
       <BottomContainer className="bg-violet-200">
-        <div className="bg-neutral-50 bg-opacity-50 m-5 w-[calc(100%-90px)] h-[calc(100%-160px)] overflow-auto rounded-xl p-4 border-slate-100">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+        <div className="bg-neutral-50 bg-opacity-50 m-5 w-[calc(100%-100px)] h-[calc(100%-160px)] overflow-auto rounded-xl p-4 border-slate-100">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-10 pl-20 justify-center">
             {students.map((student) => (
               <StudentCard
                 key={student.id_nino}

@@ -87,7 +87,7 @@ export default function RegisterFormStudent({ idStudent }) {
 
           <ImgSelector value={form.avatar_url} onSelect={handleAvatarSelect} />
 
-          <Button type="submit" color="verde" full>
+          <Button type="submit" color="verde" full className="min-w-[160px]">
             Guardar
           </Button>
         </form>

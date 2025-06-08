@@ -64,7 +64,7 @@ export default function LoginStudent() {
               className="w-full px-4 py-2 border rounded-md"
               required
             />
-            <Button type="submit" color="verde" full>
+            <Button type="submit" color="verde" full className="min-w-[160px]">
               Entrar
             </Button>
           </form>

@@ -3,15 +3,11 @@ import { useAuth } from "../../hooks/useAuth";
 import Header from "../Header";
 import Aside from "../Aside";
 import BottomContainer from "../BottomContainer";
+import Button from "../Button";
 
 export default function DashboardStudent() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
 
   return (
     <div className="min-h-screen bg-violet-100">
@@ -93,6 +89,17 @@ export default function DashboardStudent() {
             </div>
           </BottomContainer>
         </div>
+      </div>
+      <div className="fixed bottom-6 right-11">
+        <Button
+          color="rojo"
+          onClick={() => {
+            logout();
+            navigate("/");
+          }}
+        >
+          Cerrar Sesión
+        </Button>
       </div>
     </div>
   );

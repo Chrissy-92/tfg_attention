@@ -109,7 +109,7 @@ export default function RegisterFormPsychologist() {
             className="w-full px-4 py-2 border rounded-md"
             required
           />
-          <Button type="submit" color="verde">
+          <Button type="submit" color="verde" className="min-w-[160px]">
             Registrarse
           </Button>
         </form>

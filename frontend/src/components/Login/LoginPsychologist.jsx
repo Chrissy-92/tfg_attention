@@ -69,7 +69,7 @@ export default function LoginPsychologist() {
               className="w-full px-4 py-2 border rounded-md"
               required
             />
-            <Button type="submit" color="verde">
+            <Button type="submit" color="verde" className="min-w-[160px]">
               Entrar
             </Button>
           </form>
