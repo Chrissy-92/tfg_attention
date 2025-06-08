@@ -5,6 +5,7 @@ export default function Button({
   className = "",
   color = "azul",
   disabled = false,
+  full = false,
 }) {
   const baseStyle =
     "px-4 py-2 rounded-md font-semibold transition-colors duration-200";
@@ -21,11 +22,13 @@ export default function Button({
     ? disabledStyle
     : colorStyles[color] || colorStyles.azul;
 
+  const widthStyle = full ? "w-full" : "";
+
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`${baseStyle} ${finalStyle} ${className}`}
+      className={`${baseStyle} ${finalStyle} ${widthStyle} ${className}`}
       disabled={disabled}
     >
       {children}

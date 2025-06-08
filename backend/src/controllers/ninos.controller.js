@@ -1,5 +1,6 @@
 import { createNino, listNinosByUsuario } from "../models/nino.model.js";
 import bcrypt from "bcryptjs";
+import db from "../config/db.js";
 
 export const addNino = async (req, res) => {
   const {
@@ -46,5 +47,25 @@ export const getNinos = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error al listar niños" });
+  }
+};
+
+export const getNinoById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await db.query(
+      "SELECT id_nino, nombre, imagen_url FROM ninos WHERE id_nino = $1",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Alumno no encontrado" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error al obtener alumno por ID:", err);
+    res.status(500).json({ error: "Error del servidor" });
   }
 };

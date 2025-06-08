@@ -20,7 +20,8 @@ export default function LoginStudent() {
     e.preventDefault();
     try {
       const res = await api.post("/alumnos/login", { nombre, password });
-      login({ token: res.data.token, user: res.data });
+      const { token, ...user } = res.data;
+      login({ token, user: { ...user, token } });
       if (res.data.needsActivation) {
         navigate(`/activate-profile/${res.data.id_nino}`);
       } else {

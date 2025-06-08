@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import db from "../config/db.js";
+import jwt from "jsonwebtoken";
 
 export async function loginAlumno(req, res) {
   const { nombre, password } = req.body;
@@ -22,7 +23,14 @@ export async function loginAlumno(req, res) {
 
     const esTemporal = await bcrypt.compare("123456", nino.password);
 
+    const token = jwt.sign(
+      { id_nino: nino.id_nino, nombre: nino.nombre },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
     res.json({
+      token,
       id_nino: nino.id_nino,
       nombre: nino.nombre,
       avatar_url: nino.imagen_url,

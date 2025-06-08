@@ -8,21 +8,46 @@ import ImgSelector from "../Student/ImgSelector.jsx";
 import PopupModal from "../PopupModal.jsx";
 import BottomContainer from "../BottomContainer.jsx";
 import Header from "../Header.jsx";
+import Button from "../Button.jsx";
 
 export default function ActivateStudentProfile() {
   const { id_student } = useParams();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
+  const modoEdicion = user && !user.needsActivation;
   const [nombre, setNombre] = useState("");
   const [password, setPassword] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("/user_default.jpg");
   const [modal, setModal] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const fetchStudent = async () => {
+    try {
+      const res = await api.get(`/ninos/${id_student}`);
+      setNombre(res.data.nombre);
+      setAvatarUrl(res.data.imagen_url);
+      setPassword("123456");
+    } catch (err) {
+      console.error("❌ Error al obtener datos del alumno:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (!user) return;
+
+    const stored = localStorage.getItem("auth");
+    const { token } = JSON.parse(stored || "{}");
+    if (!token) return;
+
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    fetchStudent();
+  }, [id_student, user, modoEdicion]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/alumnos/activar", {
+      const res = await api.post("/alumnos/activar", {
         id_nino: id_student,
         nombre,
         nuevaPassword: password,
@@ -38,9 +63,13 @@ export default function ActivateStudentProfile() {
         },
       });
 
+      await fetchStudent();
+
       setModal({
         tipo: "exito",
-        mensaje: "Cuenta activada con éxito",
+        mensaje: modoEdicion
+          ? "Has modificado tu perfil"
+          : "Cuenta activada con éxito",
         onClose: () => {
           setModal(null);
           navigate("/student-dashboard");
@@ -51,11 +80,13 @@ export default function ActivateStudentProfile() {
         navigate("/student-dashboard");
       }, 2500);
     } catch (err) {
-      console.error(err);
       setModal({
         tipo: "error",
         mensaje:
-          err.response?.data?.error || "Error al activar el perfil del alumno",
+          err.response?.data?.error ||
+          (modoEdicion
+            ? "Error al modificar tu perfil"
+            : "Error al activar tu perfil"),
       });
       setTimeout(() => setModal(null), 3000);
     }
@@ -63,7 +94,7 @@ export default function ActivateStudentProfile() {
 
   return (
     <>
-      <Header title="Activa tu cuenta" />
+      <Header title={modoEdicion ? "Modifica tu perfil" : "Activa tu cuenta"} />
       <BottomContainer className="flex items-start justify-center pt-2 bg-gradient-to-br from-emerald-300 via-violet-300 to-pink-300">
         <CardWhite className="w-full max-w-md p-6">
           <form
@@ -71,7 +102,7 @@ export default function ActivateStudentProfile() {
             className="space-y-4 w-full max-w-md p-6"
           >
             <h2 className="text-xl font-semibold text-center mb-4">
-              Activar perfil del alumno
+              {modoEdicion ? "Modifica tu perfil" : "Activa tu perfil"}
             </h2>
 
             <div className="flex justify-center">
@@ -86,30 +117,35 @@ export default function ActivateStudentProfile() {
                 onChange={(e) => setNombre(e.target.value)}
                 className="w-full px-4 py-2 border rounded-md"
                 required
+                disabled={modoEdicion}
               />
             </div>
 
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium mb-1">
                 Nueva contraseña
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded-md"
+                className="w-full px-4 py-2 border rounded-md pr-10"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-9 text-gray-600"
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
             </div>
 
             <ImgSelector value={avatarUrl} onSelect={setAvatarUrl} />
 
-            <button
-              type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md"
-            >
-              Activar perfil
-            </button>
+            <Button type="submit" color="verde" full>
+              {modoEdicion ? "Guardar cambios" : "Activar perfil"}
+            </Button>
           </form>
         </CardWhite>
 

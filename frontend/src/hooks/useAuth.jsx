@@ -22,9 +22,13 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = ({ token, user }) => {
+    const userWithToken = { ...user, token };
     setAuthToken(token);
-    setUser(user);
-    localStorage.setItem("auth", JSON.stringify({ token, user }));
+    setUser(userWithToken);
+    localStorage.setItem(
+      "auth",
+      JSON.stringify({ token, user: userWithToken })
+    );
   };
 
   const logout = () => {

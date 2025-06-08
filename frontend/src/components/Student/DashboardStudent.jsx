@@ -21,7 +21,9 @@ export default function DashboardStudent() {
             modo="student-dashboard"
             buttonLabel="Editar Perfil"
             buttonColor="azul"
-            onButtonClick={() => safeNavigate("/activate-profile/:id_student")}
+            onButtonClick={() =>
+              safeNavigate(`/activate-profile/${user.id_nino}`)
+            }
           />
         </div>
 
