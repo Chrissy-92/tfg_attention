@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import useSafeNavigate from "../../hooks/useSafeNavigate";
 import { useAuth } from "../../hooks/useAuth";
 import Header from "../Header";
 import Aside from "../Aside";
@@ -7,24 +8,25 @@ import Button from "../Button";
 
 export default function DashboardStudent() {
   const navigate = useNavigate();
+  const safeNavigate = useSafeNavigate();
   const { user, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-violet-100">
       <Header title="Panel del Estudiante" />
-      <div className="flex gap-4 px-4">
-        <div className="w-72">
+      <main className="flex justify-center items-center gap-48 mx-5 h-[calc(100vh-80px)]">
+        <div className="w-80">
           <Aside
             student={user}
             modo="student-dashboard"
             buttonLabel="Editar Perfil"
             buttonColor="azul"
-            onButtonClick={() => navigate("/register-student")}
+            onButtonClick={() => safeNavigate("/activate-profile/:id_student")}
           />
         </div>
 
-        <div className="flex-1 max-w-5xl">
-          <BottomContainer>
+        <div className="flex-1 max-w-3xl flex flex-col">
+          <BottomContainer className="w-[900px] max-h-[600px] overflow-auto items-start">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
               {/* Stroop Test */}
               <section className="bg-purple-200 p-6 rounded-2xl shadow">
@@ -35,12 +37,12 @@ export default function DashboardStudent() {
                 </p>
                 <p>No hagas nada si no coinciden.</p>
                 <p className="mt-2">Pulsa en EMPEZAR cuando estés listo.</p>
-                <button
-                  onClick={() => navigate("/stroop")}
+                <Button
+                  onClick={() => safeNavigate("/stroop-test")}
                   className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
                 >
                   EMPEZAR
-                </button>
+                </Button>
               </section>
 
               {/* Cancellation Words */}
@@ -48,12 +50,12 @@ export default function DashboardStudent() {
                 <h2 className="text-xl font-bold mb-2">Test de Cancelación</h2>
                 <p>Busca y pulsa la letra objetivo tan rápido como puedas.</p>
                 <p className="mt-2">Pulsa en EMPEZAR cuando estés listo.</p>
-                <button
-                  onClick={() => navigate("/cancellation")}
+                <Button
+                  onClick={() => safeNavigate("/cancellation")}
                   className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition"
                 >
                   EMPEZAR
-                </button>
+                </Button>
               </section>
 
               {/* Quick Reaction */}
@@ -66,12 +68,12 @@ export default function DashboardStudent() {
                   Después, pulsa la que tenga el número mayor ignorando el
                   tamaño.
                 </p>
-                <button
-                  onClick={() => navigate("/quick-reaction")}
+                <Button
+                  onClick={() => safeNavigate("/quick-reaction")}
                   className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
                 >
                   EMPEZAR
-                </button>
+                </Button>
               </section>
 
               {/* Working Memory */}
@@ -79,17 +81,17 @@ export default function DashboardStudent() {
                 <h2 className="text-xl font-bold mb-2">Memoria de Trabajo</h2>
                 <p>Memoriza la posición de cada dibujo en la cuadrícula.</p>
                 <p>Después pulsa el lugar donde crees que estaba.</p>
-                <button
-                  onClick={() => navigate("/working-memory")}
+                <Button
+                  onClick={() => safeNavigate("/working-memory")}
                   className="mt-4 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
                 >
                   EMPEZAR
-                </button>
+                </Button>
               </section>
             </div>
           </BottomContainer>
         </div>
-      </div>
+      </main>
       <div className="fixed bottom-6 right-11">
         <Button
           color="rojo"

@@ -19,10 +19,6 @@ export default function ActivateStudentProfile() {
   const [avatarUrl, setAvatarUrl] = useState("/user_default.jpg");
   const [modal, setModal] = useState(null);
 
-  useEffect(() => {
-    // Opcional: se podrían precargar los datos del alumno aquí si se necesitan
-  }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

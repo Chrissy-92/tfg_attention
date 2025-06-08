@@ -47,7 +47,7 @@ export default function IntegrationPage() {
         onButtonClick={() => navigate("/psychologist-dashboard")}
       />
 
-      <main className="flex justify-center items-center gap-72 mx-5 h-[calc(100vh-80px)]">
+      <main className="flex justify-center items-center gap-48 mx-5 h-[calc(100vh-80px)]">
         <div className="w-80">
           <Aside student={student} modo="integration" />
         </div>
