@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import BottomContainer from "../components/BottomContainer.jsx";
+import api from "../services/api.js";
 
 const palabras = ["Rojo", "Verde", "Azul", "Amarillo"];
 const colores = ["red", "green", "blue", "yellow"];
@@ -24,6 +25,7 @@ export default function StroopTestPage() {
   const [respuestas, setRespuestas] = useState([]);
   const [finalizado, setFinalizado] = useState(false);
 
+  const idEvaluacionRef = useRef(null);
   const tiempoInicio = useRef(null);
   const timeoutRef = useRef(null);
   const bloqueado = useRef(false);
@@ -44,7 +46,7 @@ export default function StroopTestPage() {
     }, DURACION_ESTIMULO);
   };
 
-  const guardarRespuesta = (pulsoBarra) => {
+  const guardarRespuesta = async (pulsoBarra) => {
     if (bloqueado.current || !estimulo) return;
     bloqueado.current = true;
 
@@ -73,18 +75,45 @@ export default function StroopTestPage() {
       omitido: !pulsoBarra,
     };
 
-    console.log(
-      "🔎 Comparando:",
-      palabra,
-      "→",
-      colorEsperado,
-      "vs",
-      estimulo.color
-    );
     console.log("🟢 Respuesta registrada:", nuevaRespuesta);
 
-    setRespuestas((prev) => [...prev, nuevaRespuesta]);
+    // Guardar detalle en backend
+    try {
+      await api.post("/detalles", {
+        id_evaluacion: idEvaluacionRef.current,
+        orden_estimulo: nuevaRespuesta.orden_estimulo,
+        estimulo: nuevaRespuesta.estimulo,
+        tiempo_reaccion: nuevaRespuesta.tiempo_reaccion,
+        respuesta: nuevaRespuesta.pulso,
+        correcto: nuevaRespuesta.correcto,
+        errores: nuevaRespuesta.errores,
+      });
+    } catch (error) {
+      console.error("❌ Error al guardar detalle:", error);
+    }
+
+    const nuevasRespuestas = [...respuestas, nuevaRespuesta];
+    setRespuestas(nuevasRespuestas);
     setIndice((prev) => prev + 1);
+
+    if (indice + 1 >= TOTAL_ESTIMULOS) {
+      setFinalizado(true);
+
+      // Calcular resultado final
+      const correctas = nuevasRespuestas.filter((r) => r.correcto).length;
+      const puntaje = (correctas / TOTAL_ESTIMULOS) * 100;
+
+      try {
+        await api.post("/resultados", {
+          id_nino: Number(id_nino),
+          id_evaluacion: idEvaluacionRef.current,
+          puntaje: parseFloat(puntaje.toFixed(2)),
+          observaciones: "Resultado automático desde test Stroop",
+        });
+      } catch (error) {
+        console.error("❌ Error al guardar resultado final:", error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -118,10 +147,22 @@ export default function StroopTestPage() {
         <div className="w-full max-w-xl bg-white p-6 rounded-xl shadow text-center">
           {!empezado ? (
             <button
-              onClick={() => {
-                setEmpezado(true);
-                setIndice(0);
-                avanzar();
+              onClick={async () => {
+                try {
+                  // 1. Llamada al backend para crear evaluación
+                  const { data } = await api.post("/pruebas/Stroop/run", {
+                    id_nino: Number(id_nino), // o id_student, asegúrate que sea el id correcto
+                  });
+                  idEvaluacionRef.current = data.id_evaluacion;
+
+                  // 2. Iniciar prueba
+                  setEmpezado(true);
+                  setIndice(0);
+                  avanzar();
+                } catch (err) {
+                  console.error("❌ Error al iniciar evaluación Stroop:", err);
+                  alert("No se pudo iniciar la prueba Stroop.");
+                }
               }}
               className="px-6 py-3 text-white bg-blue-600 rounded-2xl hover:bg-blue-700 transition"
             >

@@ -107,7 +107,7 @@ export default function App() {
           />
 
           {/* Tests */}
-          <Route path="/stroop-test" element={<StroopTestPage />} />
+          <Route path="/stroop-test/:id_nino" element={<StroopTestPage />} />
           <Route path="/cancellation" element={<CancellationPage />} />
           <Route path="/quick-reaction" element={<QuickReactionPage />} />
           <Route path="/working-memory" element={<WorkingMemoryPage />} />

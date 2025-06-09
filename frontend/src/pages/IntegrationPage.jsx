@@ -6,14 +6,16 @@ import Header from "../components/Header";
 import Aside from "../components/Aside";
 import BottomContainer from "../components/BottomContainer";
 import Button from "../components/Button.jsx";
+import ResultsChart from "../components/Student/ResultsChart.jsx";
 
 export default function IntegrationPage() {
-  const { id_student } = useParams();
+  const { id_student } = useParams(); // debe coincidir con id_nino en la base de datos
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const [data, setData] = useState(null); // datos de integración
-  const [student, setStudent] = useState(null); // datos del alumno
+  const [data, setData] = useState(null);
+  const [student, setStudent] = useState(null);
+  const [respuestasStroop, setRespuestasStroop] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -34,6 +36,17 @@ export default function IntegrationPage() {
     }
   }
 
+  // Obtener datos del estudiante
+  useEffect(() => {
+    api
+      .get("/ninos")
+      .then((res) => {
+        const match = res.data.find((n) => n.id_nino === Number(id_student));
+        setStudent(match);
+      })
+      .catch((err) => console.error("Error al cargar estudiante:", err));
+  }, [id_student]);
+
   // Obtener informe de integración
   useEffect(() => {
     api
@@ -45,15 +58,41 @@ export default function IntegrationPage() {
       .finally(() => setLoading(false));
   }, [id_student]);
 
-  // Obtener datos del estudiante
+  // Obtener resultados Stroop y sus detalles
   useEffect(() => {
-    api
-      .get("/ninos")
-      .then((res) => {
-        const match = res.data.find((n) => n.id_nino === Number(id_student));
-        setStudent(match);
-      })
-      .catch((err) => console.error("Error al cargar estudiante:", err));
+    const cargarResultadosYDetalles = async () => {
+      try {
+        setLoading(true);
+
+        // 1. Obtener evaluaciones del alumno
+        const { data: resultados } = await api.get(`/resultados/${id_student}`);
+        const evaluacionStroop = resultados.find(
+          (r) => r.tipo_prueba === "Stroop"
+        );
+
+        if (!evaluacionStroop) {
+          setError("No se encontró una evaluación Stroop para este alumno.");
+          return;
+        }
+
+        // 2. Obtener detalles de esa evaluación
+        const idEvaluacion = evaluacionStroop.id_evaluacion;
+        const { data: detalles } = await api.get(`/detalles/${idEvaluacion}`);
+        setRespuestasStroop(detalles);
+        console.log("📊 Respuestas cargadas:", detalles);
+        console.log("✅ ID evaluación Stroop:", idEvaluacion);
+        setError(null);
+      } catch (err) {
+        console.error("❌ Error al cargar detalles de Stroop:", err);
+        setError("No se pudieron cargar los resultados del test Stroop.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id_student) {
+      cargarResultadosYDetalles();
+    }
   }, [id_student]);
 
   return (
@@ -116,6 +155,7 @@ export default function IntegrationPage() {
           </BottomContainer>
         </div>
       </main>
+
       <div className="fixed px-3 bottom-7 right-6 z-50">
         <Button
           color="rojo"

@@ -9,9 +9,10 @@ export async function saveDetalle(req, res) {
     orden_estimulo,
     estimulo,
     tiempo_reaccion,
-    respuesta,
+    pulso,
     correcto,
     errores,
+    omitido,
   } = req.body;
 
   try {
@@ -20,9 +21,10 @@ export async function saveDetalle(req, res) {
       orden_estimulo,
       estimulo,
       tiempo_reaccion,
-      respuesta,
+      respuesta: pulso ?? false,
       correcto,
       errores,
+      omitido: omitido ?? false,
     });
 
     res.status(201).json(detalle);

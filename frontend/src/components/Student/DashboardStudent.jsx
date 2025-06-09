@@ -40,7 +40,7 @@ export default function DashboardStudent() {
                 <p>No hagas nada si no coinciden.</p>
                 <p className="mt-2">Pulsa en EMPEZAR cuando estés listo.</p>
                 <Button
-                  onClick={() => safeNavigate("/stroop-test")}
+                  onClick={() => safeNavigate(`/stroop-test/${user.id_nino}`)}
                   className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
                 >
                   EMPEZAR
