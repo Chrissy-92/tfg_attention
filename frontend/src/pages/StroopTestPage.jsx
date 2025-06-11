@@ -4,16 +4,7 @@ import Header from "../components/Header.jsx";
 import BottomContainer from "../components/BottomContainer.jsx";
 import api from "../services/api.js";
 
-const palabras = ["Rojo", "Verde", "Azul", "Amarillo"];
-const colores = ["red", "green", "blue", "yellow"];
 const DURACION_ESTIMULO = 4000;
-const TOTAL_ESTIMULOS = 10;
-
-function generarEstimulo() {
-  const word = palabras[Math.floor(Math.random() * palabras.length)];
-  const color = colores[Math.floor(Math.random() * colores.length)];
-  return { word, color };
-}
 
 export default function StroopTestPage() {
   const { id_nino } = useParams();
@@ -22,8 +13,9 @@ export default function StroopTestPage() {
   const [empezado, setEmpezado] = useState(false);
   const [estimulo, setEstimulo] = useState(null);
   const [indice, setIndice] = useState(0);
-  const [respuestas, setRespuestas] = useState([]);
+  const [estimulos, setEstimulos] = useState([]);
   const [finalizado, setFinalizado] = useState(false);
+  const [respuestas, setRespuestas] = useState([]);
 
   const idEvaluacionRef = useRef(null);
   const tiempoInicio = useRef(null);
@@ -31,96 +23,77 @@ export default function StroopTestPage() {
   const bloqueado = useRef(false);
 
   const avanzar = () => {
-    if (indice >= TOTAL_ESTIMULOS) {
+    console.log(
+      "➡️ avanzar(): indice =",
+      indice,
+      "estimulos.length =",
+      estimulos.length
+    );
+
+    if (indice >= estimulos.length) {
+      console.log("🛑 Finaliza: índice supera o iguala a la longitud");
       setFinalizado(true);
       return;
     }
 
     bloqueado.current = false;
-    const nuevo = generarEstimulo();
-    setEstimulo(nuevo);
+    const actual = estimulos[indice];
+    const [palabra, color] = actual.estimulo.split("_");
+    setEstimulo({ ...actual, palabra, color });
+    console.log("📣 Estímulo mostrado:", { palabra, color, indice });
     tiempoInicio.current = Date.now();
 
     timeoutRef.current = setTimeout(() => {
+      console.log("⌛ Tiempo agotado, registrando como omitido");
       guardarRespuesta(false);
     }, DURACION_ESTIMULO);
   };
 
-  const guardarRespuesta = async (pulsoBarra) => {
+  const guardarRespuesta = async (respuestaCorrecta) => {
     if (bloqueado.current || !estimulo) return;
     bloqueado.current = true;
 
     clearTimeout(timeoutRef.current);
-
     const reaccion = Date.now() - tiempoInicio.current;
 
-    const colorMap = {
-      rojo: "red",
-      verde: "green",
-      azul: "blue",
-      amarillo: "yellow",
-    };
-
-    const palabra = estimulo.word.toLowerCase();
-    const colorEsperado = colorMap[palabra];
-    const esCongruente = colorEsperado === estimulo.color;
+    const palabraIgualColor =
+      estimulo.palabra.toLowerCase() === estimulo.color.toLowerCase();
 
     const nuevaRespuesta = {
-      orden_estimulo: indice + 1,
-      estimulo: `${estimulo.word}_${estimulo.color}`,
-      tiempo_reaccion: pulsoBarra ? reaccion : null,
-      pulso: pulsoBarra,
-      correcto: pulsoBarra && esCongruente,
-      errores: pulsoBarra && !esCongruente ? 1 : 0,
-      omitido: !pulsoBarra,
+      orden_estimulo: estimulo.orden_estimulo,
+      estimulo: estimulo.estimulo,
+      tiempo_reaccion: reaccion,
+      respuesta: palabraIgualColor,
+      correcto: palabraIgualColor,
+      errores: palabraIgualColor ? 0 : 1,
+      omitido: !respuestaCorrecta,
     };
 
-    console.log("🟢 Respuesta registrada:", nuevaRespuesta);
-
-    // Guardar detalle en backend
     try {
       await api.post("/detalles", {
         id_evaluacion: idEvaluacionRef.current,
-        orden_estimulo: nuevaRespuesta.orden_estimulo,
-        estimulo: nuevaRespuesta.estimulo,
-        tiempo_reaccion: nuevaRespuesta.tiempo_reaccion,
-        respuesta: nuevaRespuesta.pulso,
-        correcto: nuevaRespuesta.correcto,
-        errores: nuevaRespuesta.errores,
+        ...nuevaRespuesta,
       });
     } catch (error) {
       console.error("❌ Error al guardar detalle:", error);
     }
 
-    const nuevasRespuestas = [...respuestas, nuevaRespuesta];
-    setRespuestas(nuevasRespuestas);
     setIndice((prev) => prev + 1);
-
-    if (indice + 1 >= TOTAL_ESTIMULOS) {
-      setFinalizado(true);
-
-      // Calcular resultado final
-      const correctas = nuevasRespuestas.filter((r) => r.correcto).length;
-      const puntaje = (correctas / TOTAL_ESTIMULOS) * 100;
-
-      try {
-        await api.post("/resultados", {
-          id_nino: Number(id_nino),
-          id_evaluacion: idEvaluacionRef.current,
-          puntaje: parseFloat(puntaje.toFixed(2)),
-          observaciones: "Resultado automático desde test Stroop",
-        });
-      } catch (error) {
-        console.error("❌ Error al guardar resultado final:", error);
-      }
-    }
+    setRespuestas((prev) => [...prev, nuevaRespuesta]);
   };
 
+  // 🔁 Avanza automáticamente al cambiar el índice
   useEffect(() => {
-    if (empezado && !finalizado) {
+    if (!empezado || finalizado) return;
+    avanzar();
+  }, [indice]);
+
+  // ✅ Lanza avanzar una vez cuando los estímulos estén cargados y empezado sea true
+  useEffect(() => {
+    if (empezado && estimulos.length > 0) {
       avanzar();
     }
-  }, [indice, empezado, finalizado]);
+  }, [empezado, estimulos]);
 
   useEffect(() => {
     if (!empezado || finalizado) return;
@@ -149,16 +122,22 @@ export default function StroopTestPage() {
             <button
               onClick={async () => {
                 try {
-                  // 1. Llamada al backend para crear evaluación
                   const { data } = await api.post("/pruebas/Stroop/run", {
-                    id_nino: Number(id_nino), // o id_student, asegúrate que sea el id correcto
+                    id_nino: Number(id_nino),
                   });
                   idEvaluacionRef.current = data.id_evaluacion;
+                  console.log("🆔 ID evaluación creada:", data.id_evaluacion);
 
-                  // 2. Iniciar prueba
+                  const respuesta = await api.get(
+                    `/detalles/${idEvaluacionRef.current}`
+                  );
+                  console.log(
+                    "🧪 respuesta cruda de GET detalles:",
+                    respuesta.data
+                  );
+                  setEstimulos(respuesta.data);
                   setEmpezado(true);
                   setIndice(0);
-                  avanzar();
                 } catch (err) {
                   console.error("❌ Error al iniciar evaluación Stroop:", err);
                   alert("No se pudo iniciar la prueba Stroop.");
@@ -172,33 +151,33 @@ export default function StroopTestPage() {
             <div>
               <h2 className="text-xl font-bold mb-4">Prueba completada</h2>
             </div>
-          ) : (
-            estimulo && (
-              <div>
-                <p className="text-lg mb-2">
-                  Estímulo {indice + 1} de {TOTAL_ESTIMULOS}
-                </p>
-                <h1
-                  className="text-6xl font-bold mt-10 mb-6"
-                  style={{ color: estimulo.color }}
-                >
-                  {estimulo.word}
-                </h1>
-                <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-4">
-                  <div
-                    key={indice}
-                    className="h-full bg-green-500"
-                    style={{
-                      width: "100%",
-                      animation: "progreso 4s linear forwards",
-                    }}
-                  ></div>
-                </div>
-                <p className="text-sm italic">
-                  Pulsa la barra espaciadora si el color y el nombre coinciden
-                </p>
+          ) : estimulo ? (
+            <div>
+              <p className="text-lg mb-2">
+                Estímulo {indice + 1} de {estimulos.length}
+              </p>
+              <h1
+                className="text-6xl font-bold mt-10 mb-6"
+                style={{ color: estimulo.color }}
+              >
+                {estimulo.palabra}
+              </h1>
+              <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden mt-4">
+                <div
+                  key={indice}
+                  className="h-full bg-green-500"
+                  style={{
+                    width: "100%",
+                    animation: "progreso 4s linear forwards",
+                  }}
+                ></div>
               </div>
-            )
+              <p className="text-sm italic mt-2">
+                Pulsa la barra espaciadora si el color y el nombre coinciden
+              </p>
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-gray-500">Cargando estímulo...</p>
           )}
         </div>
       </BottomContainer>

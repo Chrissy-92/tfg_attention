@@ -9,21 +9,23 @@ export async function createDetalle({
   correcto,
   errores,
   omitido,
+  neutral,
 }) {
   const { rows } = await pool.query(
-    `INSERT INTO detalles_prueba
-      (id_evaluacion, orden_estimulo, estimulo, tiempo_reaccion, respuesta, correcto, errores, omitido)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING *;`,
+    `INSERT INTO detalles_prueba 
+    (id_evaluacion, orden_estimulo, estimulo, tiempo_reaccion, respuesta, correcto, errores, omitido, neutral)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    RETURNING *;`,
     [
       id_evaluacion,
       orden_estimulo,
       estimulo,
       tiempo_reaccion,
-      respuesta ?? false,
+      respuesta,
       correcto,
       errores,
-      omitido ?? false,
+      omitido,
+      neutral,
     ]
   );
   return rows[0];
