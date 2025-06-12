@@ -72,23 +72,17 @@ export default function StroopTestPage() {
         omitido: !respuestaCorrecta,
       };
 
-      console.log("📌 Estímulo actual:", estimulo);
-      console.log("✅ ¿Respuesta correcta?", palabraIgualColor);
-
       try {
         await api.post("/detalles", {
           id_evaluacion: idEvaluacionRef.current,
           ...nuevaRespuesta,
         });
       } catch (error) {
-        console.error("❌ Error al guardar detalle:", error);
+        console.error("Error al guardar detalle:", error);
       }
 
       const respuestasFinales = [...respuestas, nuevaRespuesta];
       setRespuestas(respuestasFinales);
-
-      console.log("📊 respuestasFinales.length:", respuestasFinales.length);
-      console.log("🎯 estimulos.length:", estimulos.length);
 
       if (respuestasFinales.length === estimulos.length) {
         const aciertos = respuestasFinales.filter((r) => r.correcto).length;
@@ -104,7 +98,7 @@ export default function StroopTestPage() {
           });
           console.log("✅ Resultado enviado al backend:", puntaje.toFixed(2));
         } catch (err) {
-          console.error("❌ Error al guardar resultado global:", err);
+          console.error("Error al guardar resultado global:", err);
         }
 
         setFinalizado(true);
