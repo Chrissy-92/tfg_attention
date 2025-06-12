@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { createUser, findUserByEmail } from "../models/usuario.model.js";
 
 export async function register(req, res) {
-  const { nombre, email, password, rol } = req.body;
+  const { nombre, email, password, avatar_url } = req.body;
 
   try {
     if (await findUserByEmail(email)) {
@@ -12,23 +12,17 @@ export async function register(req, res) {
 
     const hash = await bcrypt.hash(password, 10);
 
-    const avatar_url = req.file
-      ? `/uploads/${req.file.filename}`
-      : "/uploads/user_default.jpg";
-
     const user = await createUser({
       nombre,
       email,
-      password: hash,
-      rol,
-      avatar_url,
+      hashedPassword: hash,
+      avatar_url: avatar_url || "/uploads/user_default.jpg",
     });
 
     const token = jwt.sign(
       {
         sub: user.id_usuario,
         nombre: user.nombre,
-        rol: user.rol,
         avatar_url: user.avatar_url,
       },
       process.env.JWT_SECRET,
@@ -55,7 +49,6 @@ export async function login(req, res) {
       {
         sub: user.id_usuario,
         nombre: user.nombre,
-        rol: user.rol,
         avatar_url: user.avatar_url,
       },
       process.env.JWT_SECRET,

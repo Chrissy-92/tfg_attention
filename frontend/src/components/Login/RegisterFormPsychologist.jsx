@@ -34,15 +34,13 @@ export default function RegisterFormPsychologist() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append("nombre", form.nombre);
-      formData.append("email", form.email);
-      formData.append("password", form.password);
-      if (form.imagen) {
-        formData.append("imagen", form.imagen);
-      }
+      const response = await registrarUsuario({
+        nombre: form.nombre,
+        email: form.email,
+        password: form.password,
+        imagen_url: form.imagen, // aunque sea null, lo mandamos
+      });
 
-      const response = await registrarUsuario(formData);
       setModal({ tipo: "exito", mensaje: "Registro exitoso" });
 
       setTimeout(async () => {
@@ -55,6 +53,7 @@ export default function RegisterFormPsychologist() {
         navigate("/psychologist-dashboard");
       }, 2500);
     } catch (error) {
+      console.error("❌ Error en el registro:", error);
       const mensaje = error.response?.data?.error?.includes("registrado")
         ? "Error: Usuario ya registrado"
         : "Error en el registro";
