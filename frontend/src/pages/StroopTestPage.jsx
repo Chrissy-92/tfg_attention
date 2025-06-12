@@ -9,6 +9,7 @@ const DURACION_ESTIMULO = 4000;
 export default function StroopTestPage() {
   const { id_nino } = useParams();
   const navigate = useNavigate();
+  const guardarRespuestaRef = useRef();
 
   const [empezado, setEmpezado] = useState(false);
   const [estimulo, setEstimulo] = useState(null);
@@ -23,15 +24,7 @@ export default function StroopTestPage() {
   const bloqueado = useRef(false);
 
   const avanzar = () => {
-    console.log(
-      "➡️ avanzar(): indice =",
-      indice,
-      "estimulos.length =",
-      estimulos.length
-    );
-
     if (indice >= estimulos.length) {
-      console.log("🛑 Finaliza: índice supera o iguala a la longitud");
       setFinalizado(true);
       return;
     }
@@ -40,55 +33,94 @@ export default function StroopTestPage() {
     const actual = estimulos[indice];
     const [palabra, color] = actual.estimulo.split("_");
     setEstimulo({ ...actual, palabra, color });
-    console.log("📣 Estímulo mostrado:", { palabra, color, indice });
     tiempoInicio.current = Date.now();
 
     timeoutRef.current = setTimeout(() => {
-      console.log("⌛ Tiempo agotado, registrando como omitido");
-      guardarRespuesta(false);
+      if (guardarRespuestaRef.current) {
+        guardarRespuestaRef.current(false);
+      }
     }, DURACION_ESTIMULO);
   };
 
-  const guardarRespuesta = async (respuestaCorrecta) => {
-    if (bloqueado.current || !estimulo) return;
-    bloqueado.current = true;
+  const guardarRespuesta = (() => {
+    let procesando = false;
 
-    clearTimeout(timeoutRef.current);
-    const reaccion = Date.now() - tiempoInicio.current;
+    return async (respuestaCorrecta) => {
+      if (procesando || !estimulo) return;
+      procesando = true;
+      bloqueado.current = true;
 
-    const palabraIgualColor =
-      estimulo.palabra.toLowerCase() === estimulo.color.toLowerCase();
+      clearTimeout(timeoutRef.current);
+      const reaccion = Date.now() - tiempoInicio.current;
 
-    const nuevaRespuesta = {
-      orden_estimulo: estimulo.orden_estimulo,
-      estimulo: estimulo.estimulo,
-      tiempo_reaccion: reaccion,
-      respuesta: palabraIgualColor,
-      correcto: palabraIgualColor,
-      errores: palabraIgualColor ? 0 : 1,
-      omitido: !respuestaCorrecta,
+      // Lógica dinámica desde el frontend
+      const congruentes = [
+        "Rojo_red",
+        "Verde_green",
+        "Azul_blue",
+        "Amarillo_yellow",
+      ];
+      const palabraIgualColor = congruentes.includes(estimulo.estimulo);
+
+      const nuevaRespuesta = {
+        orden_estimulo: estimulo.orden_estimulo,
+        estimulo: estimulo.estimulo,
+        tiempo_reaccion: reaccion,
+        respuesta: palabraIgualColor,
+        correcto: palabraIgualColor,
+        errores: palabraIgualColor ? 0 : 1,
+        omitido: !respuestaCorrecta,
+      };
+
+      console.log("📌 Estímulo actual:", estimulo);
+      console.log("✅ ¿Respuesta correcta?", palabraIgualColor);
+
+      try {
+        await api.post("/detalles", {
+          id_evaluacion: idEvaluacionRef.current,
+          ...nuevaRespuesta,
+        });
+      } catch (error) {
+        console.error("❌ Error al guardar detalle:", error);
+      }
+
+      const respuestasFinales = [...respuestas, nuevaRespuesta];
+      setRespuestas(respuestasFinales);
+
+      console.log("📊 respuestasFinales.length:", respuestasFinales.length);
+      console.log("🎯 estimulos.length:", estimulos.length);
+
+      if (respuestasFinales.length === estimulos.length) {
+        const aciertos = respuestasFinales.filter((r) => r.correcto).length;
+        const total = respuestasFinales.length;
+        const puntaje = (aciertos / total) * 100;
+
+        try {
+          await api.post("/resultados", {
+            id_nino: Number(id_nino),
+            id_evaluacion: idEvaluacionRef.current,
+            puntaje: puntaje.toFixed(2),
+            observaciones: "Resultado automático de Stroop test",
+          });
+          console.log("✅ Resultado enviado al backend:", puntaje.toFixed(2));
+        } catch (err) {
+          console.error("❌ Error al guardar resultado global:", err);
+        }
+
+        setFinalizado(true);
+      } else {
+        setIndice((prev) => prev + 1);
+      }
+
+      procesando = false;
     };
+  })();
 
-    try {
-      await api.post("/detalles", {
-        id_evaluacion: idEvaluacionRef.current,
-        ...nuevaRespuesta,
-      });
-    } catch (error) {
-      console.error("❌ Error al guardar detalle:", error);
-    }
-
-    setIndice((prev) => prev + 1);
-    setRespuestas((prev) => [...prev, nuevaRespuesta]);
-  };
-
-  // 🔁 Avanza automáticamente al cambiar el índice
   useEffect(() => {
     if (!empezado || finalizado) return;
     avanzar();
   }, [indice]);
 
-  // ✅ Lanza avanzar una vez cuando los estímulos estén cargados y empezado sea true
   useEffect(() => {
     if (empezado && estimulos.length > 0) {
       avanzar();
@@ -108,6 +140,8 @@ export default function StroopTestPage() {
     window.addEventListener("keydown", manejarKey);
     return () => window.removeEventListener("keydown", manejarKey);
   }, [empezado, finalizado, estimulo]);
+
+  guardarRespuestaRef.current = guardarRespuesta;
 
   return (
     <div className="min-h-screen bg-violet-300/50">
@@ -130,10 +164,6 @@ export default function StroopTestPage() {
 
                   const respuesta = await api.get(
                     `/detalles/${idEvaluacionRef.current}`
-                  );
-                  console.log(
-                    "🧪 respuesta cruda de GET detalles:",
-                    respuesta.data
                   );
                   setEstimulos(respuesta.data);
                   setEmpezado(true);
