@@ -2,13 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CardWhite from "../CardWhite.jsx";
 import ImgPerfil from "../ImgPerfil.jsx";
+import Input from "../Input.jsx";
 import Button from "../Button.jsx";
 import Header from "../Header.jsx";
 import BottomContainer from "../BottomContainer.jsx";
-import PopUpModal from "../PopupModal.jsx";
+import PopupModal from "../PopupModal.jsx";
 
 export default function StudentFormAdd({ onSubmit }) {
   const navigate = useNavigate();
+  const [modal, setModal] = useState(null);
 
   const [form, setForm] = useState({
     nombre: "",
@@ -42,9 +44,23 @@ export default function StudentFormAdd({ onSubmit }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit?.(form);
+    try {
+      await onSubmit?.(form);
+      setModal({ tipo: "exito", mensaje: "Estudiante registrado con éxito" });
+      setTimeout(() => {
+        setModal(null);
+        navigate("/psychologist-dashboard");
+      }, 2500);
+    } catch (err) {
+      console.error(err);
+      setModal({
+        tipo: "error",
+        mensaje: "Error al registrar el estudiante",
+      });
+      setTimeout(() => setModal(null), 3000);
+    }
   };
 
   return (
@@ -62,70 +78,63 @@ export default function StudentFormAdd({ onSubmit }) {
             className="space-y-4 flex flex-col items-center"
           >
             <ImgPerfil src={form.avatar_url} alt="Avatar niño" />
-            <input
+            <Input
               type="text"
               name="nombre"
               placeholder="Nombre completo"
               value={form.nombre}
               onChange={handleChange}
-              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
-            <input
+            <Input
               type="date"
               name="fecha_nacimiento"
               value={form.fecha_nacimiento}
               onChange={handleChange}
-              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
             <select
               name="genero"
               value={form.genero}
               onChange={handleChange}
-              className="w-80 max-w-full px-4 py-2 border rounded-md"
+              className="w-full max-w-full px-4 py-3 border rounded-md"
             >
               <option value="">Selecciona género</option>
               <option value="masculino">Masculino</option>
               <option value="femenino">Femenino</option>
             </select>
-            <input
+            <Input
               type="number"
               name="edad"
               placeholder="Edad"
               value={form.edad}
               onChange={handleChange}
-              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
-            <input
+            <Input
               type="text"
               name="padre"
               placeholder="Nombre del padre"
               value={form.padre}
               onChange={handleChange}
-              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
-            <input
+            <Input
               type="text"
               name="madre"
               placeholder="Nombre de la madre"
               value={form.madre}
               onChange={handleChange}
-              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
-            <input
+            <Input
               type="tel"
               name="telefono"
               placeholder="Teléfono"
               value={form.telefono}
               onChange={handleChange}
-              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
-            <input
+            <Input
               type="email"
               name="email_tutores"
               placeholder="Email de contacto"
               value={form.email_tutores}
               onChange={handleChange}
-              className="w-80 max-w-full px-4 py-2 border rounded-md"
             />
             <div className="flex gap-4 justify-center mt-7">
               <Button color="azul" type="submit">
@@ -141,6 +150,14 @@ export default function StudentFormAdd({ onSubmit }) {
             </div>
           </form>
         </CardWhite>
+        {modal && (
+          <PopupModal
+            tipo={modal.tipo}
+            mensaje={modal.mensaje}
+            onClose={() => setModal(null)}
+            posicionClass="bottom-4 right-4"
+          />
+        )}
       </BottomContainer>
     </>
   );

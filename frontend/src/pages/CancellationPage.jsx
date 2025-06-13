@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import BottomContainer from "../components/BottomContainer.jsx";
 
 export default function CancellationPage() {
+  const navigate = useNavigate();
   const [started, setStarted] = useState(false);
   const [result, setResult] = useState(null);
 
@@ -23,7 +25,7 @@ export default function CancellationPage() {
       <Header
         title="Cancelación de Letras"
         buttonLabel="Home"
-        onButtonClick={() => (window.location.href = "/dashboard-student")}
+        onButtonClick={() => navigate("/student-dashboard")}
       />
       <BottomContainer>
         <div className="bg-white p-6 rounded-xl shadow max-w-xl w-full">

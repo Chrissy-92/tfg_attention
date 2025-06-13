@@ -10,7 +10,7 @@ export default function QuickReactionPage() {
       <Header
         title="Reacción Rápida"
         buttonLabel="Home"
-        onButtonClick={() => navigate("/dashboard-student")}
+        onButtonClick={() => navigate("/student-dashboard")}
       />
 
       <BottomContainer>

@@ -10,7 +10,7 @@ export default function WorkingMemoryPage() {
       <Header
         title="Memoria de Trabajo"
         buttonLabel="Home"
-        onButtonClick={() => navigate("/dashboard-student")}
+        onButtonClick={() => navigate("/student-dashboard")}
       />
 
       <BottomContainer>
