@@ -4,10 +4,12 @@ import { useAuth } from "../../hooks/useAuth";
 import api from "../../services/api";
 import ImgPerfil from "../ImgPerfil";
 import PopupModal from "../PopupModal";
+import Input from "../Input";
 import CardWhite from "../CardWhite";
 import Button from "../Button";
 import Header from "../Header";
 import BottomContainer from "../BottomContainer";
+import BackButton from "../BackButton";
 
 export default function LoginStudent() {
   const [nombre, setNombre] = useState("");
@@ -47,28 +49,34 @@ export default function LoginStudent() {
           </h2>
           <form
             onSubmit={handleSubmit}
-            className="w-full space-y-4 flex flex-col items-center"
+            className="w-full flex flex-col items-center"
           >
-            <input
+            <Input
               type="text"
               placeholder="Nombre completo"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-full px-4 py-2 border rounded-md mb-5 mt-5"
               required
             />
-            <input
+            <Input
               type="password"
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md"
+              className="w-full px-4 py-2 border rounded-md mb-5"
               required
             />
-            <Button type="submit" color="verde" full className="min-w-[160px]">
+            <Button
+              type="submit"
+              color="verde"
+              className="min-w-[180px] text-lg"
+            >
               Entrar
             </Button>
+            <BackButton className="mt-6" />
           </form>
+
           {modal && (
             <PopupModal
               tipo={modal.tipo}

@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { registrarUsuario, loginPsychologist } from "../../services/api";
 import { useAuth } from "../../hooks/useAuth";
 import ImgPerfil from "../ImgPerfil";
+import Input from "../Input";
 import PopupModal from "../PopupModal";
 import Button from "../Button";
+import BackButton from "../BackButton";
 
 export default function RegisterFormPsychologist() {
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ export default function RegisterFormPsychologist() {
         nombre: form.nombre,
         email: form.email,
         password: form.password,
-        imagen_url: form.imagen, // aunque sea null, lo mandamos
+        imagen_url: form.imagen,
       });
 
       setModal({ tipo: "exito", mensaje: "Registro exitoso" });
@@ -74,14 +76,14 @@ export default function RegisterFormPsychologist() {
           onSubmit={handleSubmit}
           className="w-full space-y-4 flex flex-col items-center"
         >
-          <input
+          <Input
             type="file"
             name="imagen"
             accept="image/*"
             onChange={handleChange}
             className="cursor-pointer file:cursor-pointer"
           />
-          <input
+          <Input
             type="text"
             name="nombre"
             placeholder="Nombre completo"
@@ -90,7 +92,7 @@ export default function RegisterFormPsychologist() {
             className="w-full px-4 py-2 border rounded-md"
             required
           />
-          <input
+          <Input
             type="email"
             name="email"
             placeholder="Correo electrónico"
@@ -99,7 +101,7 @@ export default function RegisterFormPsychologist() {
             className="w-full px-4 py-2 border rounded-md"
             required
           />
-          <input
+          <Input
             type="password"
             name="password"
             placeholder="Contraseña"
@@ -108,9 +110,10 @@ export default function RegisterFormPsychologist() {
             className="w-full px-4 py-2 border rounded-md"
             required
           />
-          <Button type="submit" color="verde" className="min-w-[160px]">
+          <Button type="submit" color="verde" className="min-w-[180px] text-lg">
             Registrarse
           </Button>
+          <BackButton className="mt-8" />
         </form>
       </div>
 

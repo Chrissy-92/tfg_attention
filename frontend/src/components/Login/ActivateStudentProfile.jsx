@@ -6,16 +6,22 @@ import CardWhite from "../CardWhite.jsx";
 import ImgPerfil from "../ImgPerfil.jsx";
 import ImgSelector from "../Student/ImgSelector.jsx";
 import PopupModal from "../PopupModal.jsx";
+import Input from "../Input.jsx";
 import BottomContainer from "../BottomContainer.jsx";
 import Header from "../Header.jsx";
 import Button from "../Button.jsx";
+import BackButton from "../BackButton.jsx";
 
-export default function ActivateStudentProfile() {
-  const { id_student } = useParams();
+export default function ActivateStudentProfile({ idStudent: idStudentProp }) {
+  const params = useParams();
   const navigate = useNavigate();
   const { login, user } = useAuth();
 
+  const id_student = idStudentProp || params.id_student;
+
   const modoEdicion = user && !user.needsActivation;
+  const isExternalActivation = !user && idStudentProp;
+
   const [nombre, setNombre] = useState("");
   const [password, setPassword] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("/user_default.jpg");
@@ -34,36 +40,37 @@ export default function ActivateStudentProfile() {
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (modoEdicion) {
+      const stored = localStorage.getItem("auth");
+      const { token } = JSON.parse(stored || "{}");
+      if (!token) return;
 
-    const stored = localStorage.getItem("auth");
-    const { token } = JSON.parse(stored || "{}");
-    if (!token) return;
-
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    fetchStudent();
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      fetchStudent();
+    }
   }, [id_student, user, modoEdicion]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/alumnos/activar", {
+      await api.post("/alumnos/activar", {
         id_nino: id_student,
         nombre,
         nuevaPassword: password,
         imagen_url: avatarUrl,
       });
 
-      login({
-        token: null,
-        user: {
-          id_nino: id_student,
-          nombre,
-          avatar_url: avatarUrl,
-        },
-      });
-
-      await fetchStudent();
+      if (!isExternalActivation) {
+        login({
+          token: null,
+          user: {
+            id_nino: id_student,
+            nombre,
+            avatar_url: avatarUrl,
+          },
+        });
+        await fetchStudent();
+      }
 
       setModal({
         tipo: "exito",
@@ -75,6 +82,7 @@ export default function ActivateStudentProfile() {
           navigate("/student-dashboard");
         },
       });
+
       setTimeout(() => {
         setModal(null);
         navigate("/student-dashboard");
@@ -99,7 +107,7 @@ export default function ActivateStudentProfile() {
         <CardWhite className="w-full max-w-md p-6">
           <form
             onSubmit={handleSubmit}
-            className="space-y-4 w-full max-w-md p-6"
+            className="space-y-1 w-full max-w-md p-6"
           >
             <h2 className="text-xl font-semibold text-center mb-4">
               {modoEdicion ? "Modifica tu perfil" : "Activa tu perfil"}
@@ -111,7 +119,7 @@ export default function ActivateStudentProfile() {
 
             <div>
               <label className="block text-sm font-medium mb-1">Nombre</label>
-              <input
+              <Input
                 type="text"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
@@ -125,7 +133,7 @@ export default function ActivateStudentProfile() {
               <label className="block text-sm font-medium mb-1">
                 Nueva contraseña
               </label>
-              <input
+              <Input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -143,9 +151,19 @@ export default function ActivateStudentProfile() {
 
             <ImgSelector value={avatarUrl} onSelect={setAvatarUrl} />
 
-            <Button type="submit" color="verde" full>
-              {modoEdicion ? "Guardar cambios" : "Activar perfil"}
-            </Button>
+            <div className="flex flex-col items-center pt-6">
+              <Button
+                type="submit"
+                color="verde"
+                className="min-w-[240px] text-lg"
+              >
+                {modoEdicion ? "Guardar cambios" : "Activar perfil"}
+              </Button>
+              <BackButton
+                className="mt-6"
+                to={modoEdicion ? "/student-dashboard" : "/login-student"}
+              />
+            </div>
           </form>
         </CardWhite>
 

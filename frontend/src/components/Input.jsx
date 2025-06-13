@@ -9,7 +9,7 @@ export default function Input({
   className = "",
 }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1 w-full max-w-md">
       {label && (
         <label
           htmlFor={name}
@@ -26,7 +26,7 @@ export default function Input({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
+        className={`w-full px-4 py-3 border border-ring-blue-500 rounded-md focus:outline-none focus:ring-2 ${className}`}
       />
     </div>
   );
