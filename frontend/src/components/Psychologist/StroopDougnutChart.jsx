@@ -1,51 +1,80 @@
-// src/components/Psychologist/StroopDoughnutChart.jsx
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function StroopDoughnutChart({ puntaje }) {
-  const restante = 100 - puntaje;
+export default function StroopDoughnutChart({ respuestasStroop }) {
+  if (!respuestasStroop || respuestasStroop.length === 0) return null;
+
+  let correctas = 0;
+  let incorrectas = 0;
+  let incorrectasNeutras = 0;
+  let omitidas = 0;
+
+  respuestasStroop.forEach((resp) => {
+    const [palabra, color] = resp.estimulo.toLowerCase().split("_");
+    const esNeutral =
+      palabra !== "rojo" &&
+      palabra !== "azul" &&
+      palabra !== "amarillo" &&
+      palabra !== "verde" &&
+      palabra !== "morado" &&
+      palabra !== "rosa" &&
+      palabra !== "naranja" &&
+      palabra !== "café";
+
+    if (esNeutral) {
+      if (resp.respuesta === true) incorrectasNeutras++;
+      else correctas++;
+    } else {
+      if (resp.correcto === true) correctas++;
+      else if (resp.fallo_neutro === true) incorrectasNeutras++;
+      else if (resp.omitido === true) omitidas++;
+      else incorrectas++;
+    }
+  });
+
+  const total = correctas + incorrectas + incorrectasNeutras + omitidas;
 
   const data = {
-    labels: ["Correct", "Incorrect/Omitted"],
+    labels: [
+      `Correctas (${correctas})`,
+      `Incorrectas (${incorrectas})`,
+      `Incorrectas neutras (${incorrectasNeutras})`,
+      `Omisiones (${omitidas})`,
+    ],
     datasets: [
       {
-        data: [puntaje, restante],
-        backgroundColor: ["#4ade80", "#f87171"],
+        data: [correctas, incorrectas, incorrectasNeutras, omitidas],
+        backgroundColor: ["#4ade80", "#f87171", "#facc15", "#60a5fa"],
         borderWidth: 1,
       },
     ],
   };
 
   const options = {
-    cutout: "65%",
     plugins: {
-      legend: {
-        display: true,
-        position: "bottom",
-        labels: {
-          color: "#4b5563",
-          font: {
-            size: 14,
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const value = context.raw;
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `${context.label}: ${value} respuestas (${percentage}%)`;
           },
         },
+      },
+      legend: {
+        position: "bottom",
       },
     },
   };
 
   return (
-    <div className="bg-white shadow-md rounded-xl p-6 max-w-sm mx-auto text-center">
-      <h3 className="text-lg font-semibold text-gray-700 mb-4">
-        Stroop Test Result
-      </h3>
+    <div className="w-full md:w-1/2 p-4">
+      <h2 className="text-lg font-semibold mb-2 text-center">
+        Resultados Prueba Stroop
+      </h2>
       <Doughnut data={data} options={options} />
-      <p className="mt-4 text-sm text-gray-600">
-        Accuracy:{" "}
-        <span className="font-medium text-emerald-600">
-          {puntaje.toFixed(2)}%
-        </span>
-      </p>
     </div>
   );
 }

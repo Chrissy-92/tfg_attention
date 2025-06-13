@@ -9,10 +9,11 @@ export async function saveDetalle(req, res) {
     orden_estimulo,
     estimulo,
     tiempo_reaccion,
-    pulso,
+    respuesta,
     correcto,
     errores,
     omitido,
+    fallo_neutro,
   } = req.body;
 
   try {
@@ -21,10 +22,12 @@ export async function saveDetalle(req, res) {
       orden_estimulo,
       estimulo,
       tiempo_reaccion,
-      respuesta: pulso ?? false,
+      respuesta: respuesta ?? false,
       correcto,
       errores,
       omitido: omitido ?? false,
+      fallo_neutro: fallo_neutro ?? false,
+      neutral: estimulo.toLowerCase().includes("neutro"),
     });
 
     res.status(201).json(detalle);

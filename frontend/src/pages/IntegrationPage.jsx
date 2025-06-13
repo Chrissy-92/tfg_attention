@@ -6,39 +6,19 @@ import Header from "../components/Header";
 import Aside from "../components/Aside";
 import BottomContainer from "../components/BottomContainer";
 import Button from "../components/Button.jsx";
-import ResultsChart from "../components/Student/ResultsChart.jsx";
-import StroopDoughnutChart from "../components/Psychologist/StroopDougnutChart.jsx";
+import StroopResultsCard from "../components/Psychologist/StroopResultsCard.jsx";
 
 export default function IntegrationPage() {
-  const { id_student } = useParams(); // debe coincidir con id_nino en la base de datos
+  const { id_student } = useParams();
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   const [data, setData] = useState(null);
   const [student, setStudent] = useState(null);
   const [respuestasStroop, setRespuestasStroop] = useState([]);
-  const [puntajeStroop, setPuntajeStroop] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  function generarResumen(respuestas) {
-    const total = respuestas.length;
-    const correctos = respuestas.filter((r) => r.correcto).length;
-    const errores = respuestas.filter((r) => r.errores > 0).length;
-    const omitidos = respuestas.filter((r) => r.omitido).length;
-
-    if (omitidos >= total * 0.4) {
-      return "Se observan numerosas omisiones, lo cual podría indicar dificultades en la atención sostenida.";
-    } else if (errores >= total * 0.4) {
-      return "El número de errores es elevado, lo que puede reflejar impulsividad o bajo control inhibitorio.";
-    } else if (correctos >= total * 0.7) {
-      return "El rendimiento general ha sido adecuado, con buena precisión en la tarea de interferencia cognitiva.";
-    } else {
-      return "El patrón de respuestas presenta variabilidad, lo que puede sugerir inestabilidad atencional.";
-    }
-  }
-
-  // Obtener datos del estudiante
   useEffect(() => {
     api
       .get("/ninos")
@@ -49,24 +29,24 @@ export default function IntegrationPage() {
       .catch((err) => console.error("Error al cargar estudiante:", err));
   }, [id_student]);
 
-  // Obtener informe de integración
-  useEffect(() => {
-    api
-      .get(`/integracion/${id_student}`)
-      .then((res) => setData(res.data))
-      .catch((err) =>
-        setError(err.response?.data?.message || "No hay informe disponible.")
-      )
-      .finally(() => setLoading(false));
-  }, [id_student]);
+  // useEffect(() => {
+  //   api
+  //     .get(`/integracion/${id_student}`)
+  //     .then((res) => setData(res.data))
+  //     .catch((err) => {
+  //       console.warn(
+  //         "No hay informe de integración aún:",
+  //         err.response?.data?.message
+  //       );
+  //       setData(null);
+  //     })
+  //     .finally(() => setLoading(false));
+  // }, [id_student]);
 
-  // Obtener resultados Stroop y sus detalles
   useEffect(() => {
     const cargarResultadosYDetalles = async () => {
       try {
         setLoading(true);
-
-        // 1. Obtener evaluaciones del alumno
         const { data: resultados } = await api.get(`/resultados/${id_student}`);
         const evaluacionStroop = resultados
           .slice()
@@ -76,23 +56,19 @@ export default function IntegrationPage() {
         if (!evaluacionStroop) {
           console.warn("❌ No se encontró evaluación Stroop para este alumno.");
           setRespuestasStroop([]);
-          setPuntajeStroop(null);
           setError("Este alumno aún no ha realizado la prueba Stroop.");
           return;
         }
 
-        // 2. Obtener detalles de esa evaluación
         const idEvaluacion = evaluacionStroop.id_evaluacion;
         const { data: detalles } = await api.get(`/detalles/${idEvaluacion}`);
         setRespuestasStroop(detalles);
-        setPuntajeStroop(parseFloat(evaluacionStroop.puntaje));
-        console.log("📊 Respuestas cargadas:", detalles);
-        console.log("✅ ID evaluación Stroop:", idEvaluacion);
+        console.log("Respuestas cargadas:", detalles);
+        console.log("ID evaluación Stroop:", idEvaluacion);
         setError(null);
       } catch (err) {
         console.error("❌ Error al cargar detalles de Stroop:", err);
         setRespuestasStroop([]);
-        setPuntajeStroop(null);
         setError("No se pudieron cargar los resultados del test Stroop.");
       } finally {
         setLoading(false);
@@ -117,13 +93,12 @@ export default function IntegrationPage() {
           <Aside student={student} modo="integration" />
         </div>
         <div className="flex-1 max-w-3xl flex flex-col">
-          <BottomContainer className="w-[900px] max-h-[600px] overflow-auto items-start">
-            <section className="bg-slate-200 p-6 rounded-lg shadow w-full">
+          <BottomContainer className="w-[900px] min-h-[700px] overflow-auto items-start">
+            <section className="bg-slate-200 p-6 rounded-lg shadow w-full min-h-[600px]">
               {loading && <p>Cargando informe...</p>}
               {!loading && error && <p className="text-red-500">{error}</p>}
-              {!loading && (
+              {!loading && !error && (
                 <div className="space-y-6">
-                  {/* 1. Datos básicos */}
                   {data && (
                     <div className="space-y-2">
                       <p>
@@ -137,24 +112,14 @@ export default function IntegrationPage() {
                     </div>
                   )}
 
-                  {/* 2. Gráfico de resultados */}
-                  {puntajeStroop !== null && (
-                    <div className="max-w-xs mx-auto">
-                      <StroopDoughnutChart puntaje={puntajeStroop} />
-                    </div>
+                  <StroopResultsCard respuestasStroop={respuestasStroop} />
+
+                  {respuestasStroop.length === 0 && !error && (
+                    <p className="text-center text-gray-600">
+                      No hay resultados Stroop disponibles.
+                    </p>
                   )}
 
-                  {/* 3. Resumen automático */}
-                  {respuestasStroop.length > 0 && (
-                    <div>
-                      <p>
-                        <span className="font-semibold">Resumen:</span>{" "}
-                        {generarResumen(respuestasStroop)}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* 4. Percentil global */}
                   {data && (
                     <div>
                       <p>

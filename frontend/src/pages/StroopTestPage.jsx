@@ -1,3 +1,4 @@
+// ...importaciones iniciales
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header.jsx";
@@ -53,23 +54,41 @@ export default function StroopTestPage() {
       clearTimeout(timeoutRef.current);
       const reaccion = Date.now() - tiempoInicio.current;
 
-      // Lógica dinámica desde el frontend
       const congruentes = [
         "Rojo_red",
         "Verde_green",
         "Azul_blue",
         "Amarillo_yellow",
+        "Morado_purple",
+        "Rosa_pink",
+        "Naranja_orange",
+        "Café_brown",
       ];
+
+      const respondio = respuestaCorrecta;
+      const esNeutro = estimulo.estimulo.toLowerCase().includes("neutro");
       const palabraIgualColor = congruentes.includes(estimulo.estimulo);
+
+      const omitido = !respondio;
+      const falloNeutro = respondio && esNeutro;
+
+      // 🎯 Nueva lógica de evaluación
+      let correcto = false;
+      if (esNeutro) {
+        correcto = !respondio; // ✅ si omite un neutro, es correcto
+      } else if (palabraIgualColor) {
+        correcto = respondio; // ✅ si responde a un congruente, es correcto
+      }
 
       const nuevaRespuesta = {
         orden_estimulo: estimulo.orden_estimulo,
         estimulo: estimulo.estimulo,
-        tiempo_reaccion: reaccion,
-        respuesta: palabraIgualColor,
-        correcto: palabraIgualColor,
-        errores: palabraIgualColor ? 0 : 1,
-        omitido: !respuestaCorrecta,
+        tiempo_reaccion: respondio ? reaccion : null,
+        respuesta: respondio,
+        correcto,
+        errores: correcto ? 0 : 1,
+        omitido,
+        fallo_neutro: falloNeutro,
       };
 
       try {
@@ -156,10 +175,7 @@ export default function StroopTestPage() {
                   idEvaluacionRef.current = data.id_evaluacion;
                   console.log("🆔 ID evaluación creada:", data.id_evaluacion);
 
-                  const respuesta = await api.get(
-                    `/detalles/${idEvaluacionRef.current}`
-                  );
-                  setEstimulos(respuesta.data);
+                  setEstimulos(data.estimulos);
                   setEmpezado(true);
                   setIndice(0);
                 } catch (err) {

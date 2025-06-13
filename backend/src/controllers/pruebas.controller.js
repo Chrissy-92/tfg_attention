@@ -1,6 +1,5 @@
 import { listTiposPrueba } from "../models/prueba.model.js";
 import { createEvaluacion } from "../models/evaluacion.model.js";
-import { createDetalle } from "../models/detalle.model.js";
 import { stroopStimuli } from "../data/stroopData.js";
 
 // GET /pruebas
@@ -30,23 +29,20 @@ export async function runPrueba(req, res) {
         .sort(() => Math.random() - 0.5)
         .slice(0, 15);
 
-      for (let i = 0; i < seleccionados.length; i++) {
-        const estimulo = seleccionados[i];
-        await createDetalle({
-          id_evaluacion,
-          orden_estimulo: i + 1,
-          estimulo: `${estimulo.palabra}_${estimulo.color}`,
-          tiempo_reaccion: null,
-          respuesta: false,
-          correcto: false,
-          errores: 0,
-          omitido: false,
-          neutral: estimulo.neutral,
-        });
-      }
+      // ⛔ Ya no se guardan filas en detalle aquí
+
+      // ✅ Solo se devuelven los estímulos al frontend
+      return res.status(201).json({
+        id_evaluacion,
+        estimulos: seleccionados.map((e, index) => ({
+          orden_estimulo: index + 1,
+          estimulo: `${e.palabra}_${e.color}`,
+        })),
+      });
     }
 
-    res.status(201).json({ id_evaluacion });
+    // Por si el tipo de prueba no es Stroop
+    res.status(400).json({ error: "Tipo de prueba no soportado." });
   } catch (err) {
     console.error("Error en POST /pruebas/:testType/run:", err);
     res.status(500).json({ error: "Error al iniciar prueba" });
