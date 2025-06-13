@@ -28,24 +28,13 @@ export default function CancellationPage() {
         onButtonClick={() => navigate("/student-dashboard")}
       />
       <BottomContainer>
-        <div className="bg-white p-6 rounded-xl shadow max-w-xl w-full">
-          {!started ? (
-            <button
-              onClick={handleStart}
-              className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition w-full"
-            >
-              Iniciar prueba
-            </button>
-          ) : result ? (
-            <div className="space-y-2 text-center">
-              <h2 className="text-xl font-bold">Resultados</h2>
-              <p>Aciertos: {result.aciertos}</p>
-              <p>Errores: {result.errores}</p>
-              <p>Tiempo total: {result.tiempo}</p>
-            </div>
-          ) : (
-            <p className="text-center">Ejecutando prueba...</p>
-          )}
+        <div className="bg-white p-6 rounded-2xl shadow w-full max-w-xl text-center">
+          <h2 className="text-xl font-semibold mb-4">
+            Aquí irá la lógica de la prueba
+          </h2>
+          <p className="text-gray-600">
+            Espacio reservado para el desarrollo futuro.
+          </p>
         </div>
       </BottomContainer>
     </div>

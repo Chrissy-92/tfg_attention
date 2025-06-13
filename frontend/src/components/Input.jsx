@@ -6,6 +6,7 @@ export default function Input({
   onChange,
   placeholder = "",
   required = false,
+  disabled = false,
   className = "",
 }) {
   return (
@@ -26,6 +27,7 @@ export default function Input({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
+        disabled={disabled}
         className={`w-full px-4 py-3 border border-ring-blue-500 rounded-md focus:outline-none focus:ring-2 ${className}`}
       />
     </div>

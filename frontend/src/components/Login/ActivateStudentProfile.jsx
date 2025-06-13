@@ -33,7 +33,12 @@ export default function ActivateStudentProfile({ idStudent: idStudentProp }) {
       const res = await api.get(`/ninos/${id_student}`);
       setNombre(res.data.nombre);
       setAvatarUrl(res.data.imagen_url);
-      setPassword("123456");
+
+      if (modoEdicion) {
+        setPassword("******");
+      } else {
+        setPassword("123456");
+      }
     } catch (err) {
       console.error("❌ Error al obtener datos del alumno:", err);
     }
@@ -47,28 +52,41 @@ export default function ActivateStudentProfile({ idStudent: idStudentProp }) {
 
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       fetchStudent();
+    } else if (isExternalActivation) {
+      fetchStudent();
     }
   }, [id_student, user, modoEdicion]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const passwordToSend =
+      password.trim() === "" || password === "******" ? null : password;
+
     try {
       await api.post("/alumnos/activar", {
         id_nino: id_student,
         nombre,
-        nuevaPassword: password,
+        ...(passwordToSend && { nuevaPassword: passwordToSend }),
         imagen_url: avatarUrl,
       });
 
       if (!isExternalActivation) {
+        const stored = localStorage.getItem("auth");
+        const { token } = JSON.parse(stored || "{}");
+        if (token) {
+          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        }
+
         login({
-          token: null,
+          token,
           user: {
             id_nino: id_student,
             nombre,
             avatar_url: avatarUrl,
           },
         });
+
         await fetchStudent();
       }
 
