@@ -2,16 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Establece altura completa al contenedor principal */
 #root {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
+/* Oculta scroll vertical */
 body {
   overflow: hidden;
 }
 
+/* Animación para barras de progreso (se usa en Stroop) */
 @keyframes progreso {
   from {
     width: 100%;

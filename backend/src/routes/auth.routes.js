@@ -4,8 +4,10 @@ import { upload } from "../middleware/upload.middleware.js";
 
 const router = Router();
 
-// Ruta con subida de imagen
+// Ruta para registrar un nuevo psicólogo con imagen de perfil
 router.post("/register", upload.single("imagen"), register);
+
+// Ruta para iniciar sesión
 router.post("/login", login);
 
 export default router;

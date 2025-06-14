@@ -1,3 +1,4 @@
+// Componente contenedor tipo "card" con fondo blanco, borde redondeado y sombra
 export default function CardWhite({ children }) {
   return (
     <div className="bg-white rounded-xl shadow p-8 w-full max-w-md">

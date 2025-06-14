@@ -1,3 +1,4 @@
+// Botón reutilizable con estilos por color, deshabilitado y ancho completo opcional
 export default function Button({
   children,
   onClick,

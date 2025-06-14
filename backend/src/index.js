@@ -1,7 +1,5 @@
 import dotenv from "dotenv";
 dotenv.config();
-console.log("Cargando .env desde:", process.cwd());
-console.log("DB_HOST es:", process.env.DB_HOST);
 
 import express from "express";
 import cors from "cors";
@@ -17,14 +15,16 @@ import alumnosRoutes from "./routes/alumnos.routes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Carpeta pública para acceder a las imágenes subidas
 app.use("/uploads", express.static("uploads"));
 
-// Verificación de variables de entorno críticas
+// Aviso si faltan variables de entorno importantes
 if (!process.env.JWT_SECRET || !process.env.DB_HOST || !process.env.DB_NAME) {
-  console.warn("⚠️  Alguna variable de entorno crítica no está definida.");
+  console.warn("Falta alguna variable de entorno crítica.");
 }
 
-// Rutas
+// Definimos las rutas principales del backend
 app.use("/auth", authRoutes);
 app.use("/ninos", ninosRoutes);
 app.use("/pruebas", pruebasRoutes);
@@ -33,15 +33,15 @@ app.use("/detalles", detallesRoutes);
 app.use("/integracion", integracionRoutes);
 app.use("/alumnos", alumnosRoutes);
 
-// Manejo de errores globales
+// Control de errores no capturados
 process.on("uncaughtException", (err) => {
-  console.error("💥 Excepción no capturada:", err);
+  console.error("Excepción no capturada:", err);
 });
 process.on("unhandledRejection", (err) => {
-  console.error("💥 Promesa no manejada:", err);
+  console.error("Promesa no manejada:", err);
 });
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`🚀 Backend listo en http://localhost:${PORT}`);
+  console.log(`🚀Backend listo en http://localhost:${PORT}`);
 });

@@ -24,6 +24,7 @@ export default function StudentFormAdd({ onSubmit }) {
     avatar_url: "/user_default.jpg",
   });
 
+  // Maneja los cambios del formulario, incluyendo el cálculo automático de edad
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => {
@@ -44,6 +45,7 @@ export default function StudentFormAdd({ onSubmit }) {
     });
   };
 
+  // Envía los datos del alumno al backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -54,7 +56,6 @@ export default function StudentFormAdd({ onSubmit }) {
         navigate("/psychologist-dashboard");
       }, 2500);
     } catch (err) {
-      console.error(err);
       setModal({
         tipo: "error",
         mensaje: "Error al registrar el estudiante",
@@ -75,9 +76,10 @@ export default function StudentFormAdd({ onSubmit }) {
         <CardWhite>
           <form
             onSubmit={handleSubmit}
-            className="space-y-4 flex flex-col items-center"
+            className="w-full max-w-md space-y-4 flex flex-col items-center"
           >
             <ImgPerfil src={form.avatar_url} alt="Avatar niño" />
+
             <Input
               type="text"
               name="nombre"
@@ -136,20 +138,15 @@ export default function StudentFormAdd({ onSubmit }) {
               value={form.email_tutores}
               onChange={handleChange}
             />
+
             <div className="flex gap-4 justify-center mt-7">
               <Button color="azul" type="submit">
                 Guardar estudiante
               </Button>
-              <Button
-                color="violeta"
-                type="button"
-                onClick={() => navigate("/integration")}
-              >
-                Consultar Informe
-              </Button>
             </div>
           </form>
         </CardWhite>
+
         {modal && (
           <PopupModal
             tipo={modal.tipo}

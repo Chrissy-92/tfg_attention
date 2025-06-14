@@ -13,18 +13,21 @@ export default function DashboardPsychologist() {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
+  // Al montar el componente, cargamos la lista de estudiantes
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         const res = await api.get("/ninos");
         setStudents(res.data);
       } catch (err) {
-        console.error("Error al cargar estudiantes:", err);
+        // En caso de error, dejamos la lista vacía
+        setStudents([]);
       }
     };
     fetchStudents();
   }, []);
 
+  // Alterna la selección del alumno
   const handleSelect = (id) => {
     setSelectedId(id === selectedId ? null : id);
   };
@@ -32,7 +35,7 @@ export default function DashboardPsychologist() {
   return (
     <>
       <Header
-        title="Panel del Psicólogo"
+        title="EduMind Kids"
         buttonLabel="Añadir Estudiante"
         onButtonClick={() => navigate("/students-new")}
       />
@@ -52,6 +55,7 @@ export default function DashboardPsychologist() {
         </div>
       </BottomContainer>
 
+      {/* Botón para cerrar sesión */}
       <div className="fixed bottom-4 right-11">
         <Button
           color="rojo"

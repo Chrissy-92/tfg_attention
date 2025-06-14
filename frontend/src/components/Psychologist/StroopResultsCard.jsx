@@ -3,6 +3,7 @@ import StroopDoughnutChart from "./StroopDougnutChart.jsx";
 export default function StroopResultsCard({ respuestasStroop }) {
   if (!respuestasStroop || respuestasStroop.length === 0) return null;
 
+  // Clasificación de respuestas
   const total = respuestasStroop.length;
   const correctas = respuestasStroop.filter((r) => r.correcto).length;
   const incorrectas = respuestasStroop.filter(
@@ -15,6 +16,7 @@ export default function StroopResultsCard({ respuestasStroop }) {
 
   const pct = (n) => ((n / total) * 100).toFixed(1) + "%";
 
+  // Lógica que genera el resumen y recomendación según el patrón de respuestas
   function evaluarStroop() {
     if (
       correctas + omitidas === total &&
@@ -40,15 +42,6 @@ export default function StroopResultsCard({ respuestasStroop }) {
           "Rendimiento sobresaliente: predomina la precisión y la inhibición adecuada ante estímulos irrelevantes.",
         sugerencia:
           "Introducir retos cognitivos más complejos (juegos de memoria, secuencias musicales) para seguir fortaleciendo la autorregulación.",
-      };
-    }
-
-    if (omitidas >= 6 && correctas <= 7) {
-      return {
-        mensaje:
-          "Se observa un número elevado de omisiones, lo que puede indicar dificultades de atención sostenida o baja motivación.",
-        sugerencia:
-          "Implementar actividades breves con refuerzo visual inmediato y aumentar gradualmente la exigencia para evitar frustración.",
       };
     }
 
@@ -91,14 +84,14 @@ export default function StroopResultsCard({ respuestasStroop }) {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-5xl mx-auto">
-      {/* Gráfico y contenido lado a lado */}
+      {/* Layout dividido: gráfico izquierda, texto derecha */}
       <div className="flex flex-row gap-8">
-        {/* Gráfico amplio a la izquierda */}
+        {/* Gráfico circular */}
         <div className="w-1/2 flex justify-center items-center">
           <StroopDoughnutChart respuestasStroop={respuestasStroop} />
         </div>
 
-        {/* Texto, métricas y resumen a la derecha */}
+        {/* Bloque de resumen y métricas */}
         <div className="w-1/2 flex flex-col justify-start space-y-6">
           <h2 className="text-xl font-bold text-gray-800">
             Resultados Prueba Stroop
@@ -126,7 +119,7 @@ export default function StroopResultsCard({ respuestasStroop }) {
             </p>
           </div>
 
-          {/* Evaluación cualitativa */}
+          {/* Evaluación escrita */}
           <div className="bg-gray-50 rounded-lg p-4 text-sm">
             <h3 className="font-semibold text-gray-800 mb-2">Resumen:</h3>
             <p className="text-gray-700">{mensaje}</p>

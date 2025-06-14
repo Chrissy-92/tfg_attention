@@ -19,6 +19,7 @@ export default function IntegrationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Busca al alumno en la base de datos por ID
   useEffect(() => {
     api
       .get("/ninos")
@@ -26,23 +27,12 @@ export default function IntegrationPage() {
         const match = res.data.find((n) => n.id_nino === Number(id_student));
         setStudent(match);
       })
-      .catch((err) => console.error("Error al cargar estudiante:", err));
+      .catch(() => {
+        setStudent(null);
+      });
   }, [id_student]);
 
-  // useEffect(() => {
-  //   api
-  //     .get(`/integracion/${id_student}`)
-  //     .then((res) => setData(res.data))
-  //     .catch((err) => {
-  //       console.warn(
-  //         "No hay informe de integración aún:",
-  //         err.response?.data?.message
-  //       );
-  //       setData(null);
-  //     })
-  //     .finally(() => setLoading(false));
-  // }, [id_student]);
-
+  // Carga los resultados y detalles de la última evaluación Stroop
   useEffect(() => {
     const cargarResultadosYDetalles = async () => {
       try {
@@ -54,7 +44,6 @@ export default function IntegrationPage() {
           .find((r) => r.tipo_prueba === "Stroop");
 
         if (!evaluacionStroop) {
-          console.warn("❌ No se encontró evaluación Stroop para este alumno.");
           setRespuestasStroop([]);
           setError("Este alumno aún no ha realizado la prueba Stroop.");
           return;
@@ -63,11 +52,8 @@ export default function IntegrationPage() {
         const idEvaluacion = evaluacionStroop.id_evaluacion;
         const { data: detalles } = await api.get(`/detalles/${idEvaluacion}`);
         setRespuestasStroop(detalles);
-        console.log("Respuestas cargadas:", detalles);
-        console.log("ID evaluación Stroop:", idEvaluacion);
         setError(null);
       } catch (err) {
-        console.error("❌ Error al cargar detalles de Stroop:", err);
         setRespuestasStroop([]);
         setError("No se pudieron cargar los resultados del test Stroop.");
       } finally {

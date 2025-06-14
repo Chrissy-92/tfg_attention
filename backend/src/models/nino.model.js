@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-// Crear nuevo niño
+// Crea un nuevo registro de alumno con los datos proporcionados
 export async function createNino({
   nombre,
   fecha_nacimiento,
@@ -34,10 +34,11 @@ export async function createNino({
     ]
   );
 
+  // Solo devolvemos los campos básicos para confirmar el alta
   return rows[0];
 }
 
-// Listar niños por psicólogo
+// Devuelve la lista de alumnos registrados por un psicólogo concreto
 export async function listNinosByUsuario(id_usuario) {
   const { rows } = await pool.query(
     `SELECT id_nino, nombre, edad, genero, imagen_url, 

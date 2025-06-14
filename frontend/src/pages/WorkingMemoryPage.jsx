@@ -2,13 +2,14 @@ import Header from "../components/Header.jsx";
 import BottomContainer from "../components/BottomContainer.jsx";
 import { useNavigate } from "react-router-dom";
 
+// Página base para la prueba de memoria de trabajo
 export default function WorkingMemoryPage() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-pink-200">
       <Header
-        title="Memoria de Trabajo"
+        title="Prueba de Memoria de Trabajo"
         buttonLabel="Home"
         onButtonClick={() => navigate("/student-dashboard")}
       />

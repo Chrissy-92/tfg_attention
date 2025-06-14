@@ -2,14 +2,15 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
+// Botón reutilizable para volver atrás o ir a una ruta concreta
 export default function BackButton({ to, className = "" }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (to) {
-      navigate(to);
+      navigate(to); // Ir a una ruta específica si se indica
     } else {
-      navigate(-1);
+      navigate(-1); // Si no, simplemente retrocede en el historial
     }
   };
 

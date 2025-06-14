@@ -4,13 +4,13 @@ import { getPruebas, runPrueba } from "../controllers/pruebas.controller.js";
 
 const router = Router();
 
-// Autenticación global
+// Todas las rutas de pruebas requieren autenticación
 router.use(authenticate);
 
-// Listar tipos
+// Devuelve la lista de tipos de prueba disponibles
 router.get("/", getPruebas);
 
-// Iniciar prueba y obtener id_evaluacion
+// Inicia una evaluación del tipo indicado y devuelve su id junto con los estímulos (si aplica)
 router.post("/:testType/run", runPrueba);
 
 export default router;

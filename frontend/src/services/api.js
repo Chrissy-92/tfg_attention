@@ -1,12 +1,12 @@
 import axios from "axios";
 
-console.log("ENV →", import.meta.env);
-
+// Instancia de axios con configuración base
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 5000,
 });
 
+// Establece o elimina el token de autenticación
 export function setAuthToken(token) {
   if (token) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -15,7 +15,7 @@ export function setAuthToken(token) {
   }
 }
 
-// Función para registrar usuario
+// Registra a un nuevo psicólogo
 export async function registrarUsuario({
   nombre,
   email,
@@ -26,13 +26,13 @@ export async function registrarUsuario({
     nombre,
     email,
     password,
-    avatar_url: "/uploads/user_default.jpg",
+    avatar_url: "/uploads/user_default.jpg", // valor fijo por ahora
   });
 
   return response.data;
 }
 
-// Función para loguear psicólogo
+// Inicia sesión como psicólogo
 export async function loginPsychologist({ email, password }) {
   const response = await api.post("/auth/login", {
     email,
@@ -41,16 +41,16 @@ export async function loginPsychologist({ email, password }) {
   return response.data;
 }
 
-// Función para loguear niño
+// Inicia sesión como alumno
 export async function loginAlumno({ nombre, password }) {
   const response = await api.post("/alumnos/login", {
     nombre,
     password,
   });
-  return response.data; // { id_nino, nombre, imagen_url }
+  return response.data; // devuelve { id_nino, nombre, imagen_url, ... }
 }
 
-// Función para activar el perfil del alumno
+// Activa el perfil de un alumno
 export async function activarAlumno({
   id_nino,
   nombre,
@@ -66,7 +66,7 @@ export async function activarAlumno({
   return response.data;
 }
 
-// Función para enviar detalles
+// Envía los detalles de las pruebas al backend
 export async function enviarDetalles(detalles, id_evaluacion) {
   for (const detalle of detalles) {
     await api.post("/detalles", {

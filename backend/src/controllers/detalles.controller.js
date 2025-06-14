@@ -3,6 +3,7 @@ import {
   getDetallesByEvaluacion,
 } from "../models/detalle.model.js";
 
+// Guarda un detalle individual de la prueba (cada estímulo que aparece en pantalla)
 export async function saveDetalle(req, res) {
   const {
     id_evaluacion,
@@ -17,6 +18,7 @@ export async function saveDetalle(req, res) {
   } = req.body;
 
   try {
+    // Creamos el detalle con los datos recibidos
     const detalle = await createDetalle({
       id_evaluacion,
       orden_estimulo,
@@ -32,11 +34,11 @@ export async function saveDetalle(req, res) {
 
     res.status(201).json(detalle);
   } catch (err) {
-    console.error("Error en POST /detalles:", err);
     res.status(500).json({ error: "Error al guardar detalle de prueba" });
   }
 }
 
+// Recupera todos los detalles registrados de una evaluación concreta
 export async function fetchDetalles(req, res) {
   const { id_evaluacion } = req.params;
 
@@ -44,7 +46,6 @@ export async function fetchDetalles(req, res) {
     const detalles = await getDetallesByEvaluacion(id_evaluacion);
     res.json(detalles);
   } catch (err) {
-    console.error("Error en GET /detalles/:id_evaluacion:", err);
     res.status(500).json({ error: "Error al obtener detalles de prueba" });
   }
 }

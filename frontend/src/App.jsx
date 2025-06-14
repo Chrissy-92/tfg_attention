@@ -5,7 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
-// Pages
+// Pages principales
 import Inicio from "./pages/Inicio.jsx";
 import RegisterPsychologistPage from "./pages/RegisterPsychologistPage.jsx";
 import StroopTestPage from "./pages/StroopTestPage.jsx";
@@ -15,37 +15,36 @@ import WorkingMemoryPage from "./pages/WorkingMemoryPage.jsx";
 import StudentsPage from "./pages/StudentsPage.jsx";
 import IntegrationPage from "./pages/IntegrationPage.jsx";
 
-// Login
+// Componentes de Login
 import LoginPsychologist from "./components/Login/LoginPsychologist.jsx";
 import LoginStudent from "./components/Login/LoginStudent.jsx";
 import ActivateStudentProfile from "./components/Login/ActivateStudentProfile.jsx";
 
-// Psychologist
+// Panel psicólogo
 import DashboardPsychologist from "./pages/DashboardPsychologist.jsx";
 import StudentFormAdd from "./components/Psychologist/StudentFormAdd.jsx";
 
-// Student
+// Panel estudiante
 import DashboardStudent from "./components/Student/DashboardStudent.jsx";
 
-// Auth
+// Autenticación
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
 import api from "./services/api.js";
 
+// Ruta privada que requiere sesión activa
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
-  console.log("PrivateRoute → user:", user);
   if (loading) return null;
-
   return user ? children : <Navigate to="/login" replace />;
 }
 
 export default function App() {
+  // Función para crear un nuevo estudiante desde el formulario
   const handleCrearEstudiante = async (form) => {
     try {
-      const res = await api.post("/ninos", form);
-      console.log("✅ Niño creado:", res.data);
+      await api.post("/ninos", form);
     } catch (err) {
-      console.error("❌ Error al crear estudiante:", err);
+      // Manejo silencioso de error si falla la creación
     }
   };
 
@@ -53,6 +52,7 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          {/* Inicio y autenticación */}
           <Route path="/" element={<Inicio />} />
           <Route path="/login-psychologist" element={<LoginPsychologist />} />
           <Route path="/login-student" element={<LoginStudent />} />
@@ -62,7 +62,7 @@ export default function App() {
             element={<ActivateStudentProfile />}
           />
 
-          {/* Psychologist */}
+          {/* Psicólogo */}
           <Route
             path="/students"
             element={
@@ -96,7 +96,7 @@ export default function App() {
             }
           />
 
-          {/* Student */}
+          {/* Alumno */}
           <Route
             path="/student-dashboard"
             element={
@@ -106,13 +106,13 @@ export default function App() {
             }
           />
 
-          {/* Tests */}
+          {/* Pruebas */}
           <Route path="/stroop-test/:id_nino" element={<StroopTestPage />} />
           <Route path="/cancellation" element={<CancellationPage />} />
           <Route path="/quick-reaction" element={<QuickReactionPage />} />
           <Route path="/working-memory" element={<WorkingMemoryPage />} />
 
-          {/* Fallback */}
+          {/* Ruta por defecto */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

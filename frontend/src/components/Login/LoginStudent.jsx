@@ -18,12 +18,17 @@ export default function LoginStudent() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // Enviar los datos al backend para hacer login
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await api.post("/alumnos/login", { nombre, password });
       const { token, ...user } = res.data;
+
+      // Guardamos el token y datos del alumno
       login({ token, user: { ...user, token } });
+
+      // Si es la primera vez, va a activar perfil; si no, entra al dashboard
       if (res.data.needsActivation) {
         navigate(`/activate-profile/${res.data.id_nino}`);
       } else {
@@ -40,7 +45,7 @@ export default function LoginStudent() {
 
   return (
     <>
-      <Header title="TFG_Attention" />
+      <Header title="EduMind Kids" />
       <BottomContainer className="bg-gradient-to-br from-emerald-300 via-violet-300 to-pink-300">
         <CardWhite>
           <ImgPerfil />

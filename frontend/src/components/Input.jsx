@@ -1,3 +1,4 @@
+// Campo de entrada reutilizable con soporte para etiqueta, tipo, validación y estilos
 export default function Input({
   label,
   name,
@@ -11,6 +12,7 @@ export default function Input({
 }) {
   return (
     <div className="space-y-1 w-full max-w-md">
+      {/* Etiqueta del campo si se proporciona */}
       {label && (
         <label
           htmlFor={name}
@@ -19,6 +21,8 @@ export default function Input({
           {label}
         </label>
       )}
+
+      {/* Campo de entrada */}
       <input
         id={name}
         name={name}

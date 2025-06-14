@@ -2,13 +2,14 @@ import Header from "../components/Header.jsx";
 import BottomContainer from "../components/BottomContainer.jsx";
 import { useNavigate } from "react-router-dom";
 
+// Página base para la prueba de reacción rápida
 export default function QuickReactionPage() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-green-200">
       <Header
-        title="Reacción Rápida"
+        title="Prueba de Reacción Rápida"
         buttonLabel="Home"
         onButtonClick={() => navigate("/student-dashboard")}
       />

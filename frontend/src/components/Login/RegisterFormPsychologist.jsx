@@ -21,18 +21,20 @@ export default function RegisterFormPsychologist() {
   const [preview, setPreview] = useState(null);
   const [modal, setModal] = useState(null);
 
+  // Maneja cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
     if (files) {
       const file = files[0];
       setForm((prev) => ({ ...prev, [name]: file }));
-      setPreview(URL.createObjectURL(file));
+      setPreview(URL.createObjectURL(file)); // genera vista previa de la imagen
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
   };
 
+  // Envía los datos para registrar al psicólogo y lo loguea automáticamente si todo va bien
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -45,6 +47,7 @@ export default function RegisterFormPsychologist() {
 
       setModal({ tipo: "exito", mensaje: "Registro exitoso" });
 
+      // Esperamos un momento y luego iniciamos sesión con los datos registrados
       setTimeout(async () => {
         setModal(null);
         const loginRes = await loginPsychologist({
@@ -55,7 +58,6 @@ export default function RegisterFormPsychologist() {
         navigate("/psychologist-dashboard");
       }, 2500);
     } catch (error) {
-      console.error("❌ Error en el registro:", error);
       const mensaje = error.response?.data?.error?.includes("registrado")
         ? "Error: Usuario ya registrado"
         : "Error en el registro";

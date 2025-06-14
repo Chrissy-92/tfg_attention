@@ -11,8 +11,10 @@ export default function StroopDoughnutChart({ respuestasStroop }) {
   let incorrectasNeutras = 0;
   let omitidas = 0;
 
+  // Recorremos todas las respuestas recibidas para clasificarlas
   respuestasStroop.forEach((resp) => {
     const [palabra, color] = resp.estimulo.toLowerCase().split("_");
+
     const esNeutral =
       palabra !== "rojo" &&
       palabra !== "azul" &&
@@ -24,6 +26,7 @@ export default function StroopDoughnutChart({ respuestasStroop }) {
       palabra !== "café";
 
     if (esNeutral) {
+      // Si es neutro, solo cuenta como acierto si no respondió nada
       if (resp.respuesta === true) incorrectasNeutras++;
       else correctas++;
     } else {

@@ -1,49 +1,69 @@
-# TFG Attention API - Backend REST Documentation
+# TFG Attention – Plataforma Web de Evaluación Cognitiva Infantil
 
-Este documento describe los endpoints disponibles de la API REST del backend del proyecto TFG Attention.
+**TFG Attention** es una aplicación web interactiva desarrollada como Trabajo de Fin de Grado en Desarrollo de Aplicaciones Web. Permite a psicólogos gestionar estudiantes y aplicar pruebas cognitivas centradas en atención, impulsividad y memoria de trabajo, con informes automatizados y visualización de resultados.
 
-✨ Tecnologías usadas
+## Tecnologías principales
 
-Node.js + Express
+### Frontend
 
-PostgreSQL
+- React.js + Vite
+- Tailwind CSS
+- React Router
+- Chart.js
 
-JSON Web Tokens (JWT) para autenticación
+### Backend
 
-ES Modules
+- Node.js + Express
+- PostgreSQL
+- JWT (autenticación)
+- ES Modules
 
-Variables de entorno con .env
+---
 
-⚙ Instalación y ejecución local (sin Docker)
+## Instalación y ejecución local
 
-Clonar el repositorio:
+### Backend
 
-git clone <URL-del-repo>
-cd backend
+1. Clonar repositorio y acceder al directorio, una vez clonado, moverse a la carpeta backend:
 
-Instalar dependencias:
+   **git clone <URL-del-repo>**
+   **cd backend**
 
-npm install
+2. Instalar dependencias:
 
-Crear archivo .env a partir del ejemplo:
+**npm install**
 
-cp .env.example .env
+3. Configurar variables de entorno:
 
-Luego edita el archivo .env y completa con tus valores
+**cp .env.example .env**
 
-Levantar el servidor en modo desarrollo:
+Rellena los datos necesarios en el archivo .env
 
-npm run dev
+4. Levantar el servidor:
 
-🏠 URL Base
+**npm run dev**
 
-http://localhost:4000
+URL base: http://localhost:4000
 
-Todos los endpoints usan esta base. Los marcados con 🔒 requieren JWT válido en el header Authorization.
+### Frontend
 
-🔐 Autenticación
+1. Acceder a la carpeta del frontend desde la terminal:
 
-Registrar nuevo usuario
+**cd frontend**
+
+2. Instalar dependencias:
+
+**npm install**
+
+3. Iniciar la aplicación:
+
+**npm run dev**
+
+URL base: http://localhost:5173
+
+## Autenticación
+
+### Registrar nuevo psicólogo
 
 POST /auth/register
 
@@ -53,7 +73,7 @@ POST /auth/register
 "password": "secreto123"
 }
 
-Login
+### Login psicólogo
 
 POST /auth/login
 
@@ -62,113 +82,67 @@ POST /auth/login
 "password": "secreto123"
 }
 
-Respuesta:
+### Login alumno
+
+POST /alumnos/login
 
 {
-"user": { "id_usuario": 1, "nombre": "Ana López", "email": "ana@ejemplo.com" },
-"token": "<JWT_TOKEN>"
+"nombre": "Sofía Martínez",
+"password": 123456
 }
 
-Uso del token en llamadas posteriores:
+### Gestión de alumnos (/ninos) — Requiere token
 
-Authorization: Bearer <JWT_TOKEN>
+- Crear alumno: POST /ninos
 
-👧🏻👦🏻 Niños (/ninos) — 🔒 Protegido
+- Obtener alumnos: GET /ninos
 
-Crear nuevo niño
+### Pruebas cognitivas (/pruebas)
 
-POST /ninos
+- Listar disponibles: GET /pruebas
 
-{
-"nombre": "Juan Pérez",
-"fecha_nacimiento": "2014-05-12",
-"genero": "masculino",
-"edad": 10
-}
+- Iniciar prueba: POST /pruebas/:testType/run
 
-Obtener todos los niños registrados
+### Resultados generales (/resultados)
 
-GET /ninos
+- Guardar resultado: POST /resultados
 
-🧠 Pruebas Cognitivas (/pruebas) — 🔒 Protegido
+- Consultar por alumno: GET /resultados/:id_nino
 
-Listar tipos de pruebas disponibles
+### Detalles de estímulos (/detalles)
 
-GET /pruebas
+- Guardar: POST /detalles
 
-Iniciar sesión de prueba
+- Consultar por evaluación: GET /detalles/:id_evaluacion
 
-POST /pruebas/:testType/run
+### Informes integrados (/integracion)
 
-{
-"id_nino": 1
-}
+- Guardar: POST /integracion
 
-✅ Resultados Agregados (/resultados) — 🔒 Protegido
+- Consultar: GET /integracion/:id_nino
 
-Guardar o actualizar resultado
+### Pruebas implementadas en la app
 
-POST /resultados
+- Stroop: Test funcional con resultados evaluados y gráfico Doughnut.
 
-{
-"id_nino": 1,
-"id_evaluacion": 5,
-"puntaje": 72.50,
-"observaciones": "Tiempo de respuesta elevado"
-}
+- Cancelación: Página estructurada, en fase de desarrollo.
 
-Listar resultados por niño
+- Reacción rápida: Página estructurada, en fase de desarrollo.
 
-GET /resultados/:id_nino
+- Memoria de trabajo: Página estructurada, en fase de desarrollo.
 
-📊 Detalles de Estímulo (/detalles) — 🔒 Protegido
+### Errores comunes
 
-Guardar detalle de respuesta
+- 400 Bad Request: Datos incorrectos.
 
-POST /detalles
+- 401 Unauthorized: Token inválido o ausente.
 
-{
-"id_evaluacion": 5,
-"orden_estimulo": 1,
-"estimulo": "Stroop_Rojo",
-"tiempo_reaccion": 512,
-"respuesta": true,
-"correcto": true,
-"errores": 0
-}
+- 404 Not Found: Recurso inexistente.
 
-Listar detalles por evaluación
+- 500 Internal Server Error: Fallo interno del servidor.
 
-GET /detalles/:id_evaluacion
-
-🔢 Integración de Resultados (/integracion) — 🔒 Protegido
-
-Guardar informe integrador
-
-POST /integracion
-
-{
-"id_nino": 1,
-"resumen": "Buen desempeño general",
-"percentil_global": 85.0
-}
-
-Obtener informe integrador
-
-GET /integracion/:id_nino
-
-⚠️ Manejo de errores comunes
-
-400 Bad Request: Datos malformados.
-
-401 Unauthorized: Token ausente o inválido.
-
-404 Not Found: Recurso no existe.
-
-500 Internal Server Error: Error inesperado del servidor.
-
-✍️ Autor
+## Autor
 
 Cristina Angélica Pérez Huerta
-TFG - Desarrollo de Aplicaciones Web
-Generado el 25 de mayo de 2025
+Trabajo de Fin de Grado - Desarrollo de Aplicaciones Web
+15 de junio de 2025

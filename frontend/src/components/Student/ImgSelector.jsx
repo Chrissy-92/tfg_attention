@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+// Lista de avatares disponibles
 const avatarList = [
   "alumnoAvatar_h01.png",
   "alumnoAvatar_h02.png",
@@ -16,6 +17,7 @@ const avatarList = [
 export default function ImgSelector({ value, onSelect }) {
   const [selected, setSelected] = useState(value || "");
 
+  // Al seleccionar una imagen, se actualiza el estado local y se informa al componente padre
   const handleSelect = (filename) => {
     const url = `/${filename}`;
     setSelected(url);

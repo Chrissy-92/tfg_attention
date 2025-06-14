@@ -13,8 +13,9 @@ export default function DashboardStudent() {
 
   return (
     <div className="min-h-screen bg-violet-100">
-      <Header title="Panel del Estudiante" />
+      <Header title="EduMind Kids" />
       <main className="flex justify-center items-center gap-48 mx-5 h-[calc(100vh-80px)]">
+        {/* Información lateral del alumno */}
         <div className="w-80">
           <Aside
             student={user}
@@ -27,10 +28,11 @@ export default function DashboardStudent() {
           />
         </div>
 
+        {/* Área de pruebas disponibles */}
         <div className="flex-1 max-w-3xl flex flex-col">
           <BottomContainer className="w-[900px] max-h-[600px] overflow-auto items-start">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-              {/* Stroop Test */}
+              {/* Prueba Stroop */}
               <section className="bg-purple-200 p-6 rounded-2xl shadow">
                 <h2 className="text-xl font-bold mb-2">Tarea Stroop</h2>
                 <p>
@@ -47,7 +49,7 @@ export default function DashboardStudent() {
                 </Button>
               </section>
 
-              {/* Cancellation Words */}
+              {/* Prueba de Cancelación de letras */}
               <section className="bg-orange-200 p-6 rounded-2xl shadow">
                 <h2 className="text-xl font-bold mb-2">Test de Cancelación</h2>
                 <p>Busca y pulsa la letra objetivo tan rápido como puedas.</p>
@@ -60,7 +62,7 @@ export default function DashboardStudent() {
                 </Button>
               </section>
 
-              {/* Quick Reaction */}
+              {/* Prueba de Reacción Rápida */}
               <section className="bg-green-200 p-6 rounded-2xl shadow">
                 <h2 className="text-xl font-bold mb-2">Reacción Rápida</h2>
                 <p>
@@ -78,7 +80,7 @@ export default function DashboardStudent() {
                 </Button>
               </section>
 
-              {/* Working Memory */}
+              {/* Prueba Memoria de Trabajo */}
               <section className="bg-pink-200 p-6 rounded-2xl shadow">
                 <h2 className="text-xl font-bold mb-2">Memoria de Trabajo</h2>
                 <p>Memoriza la posición de cada dibujo en la cuadrícula.</p>
@@ -94,6 +96,8 @@ export default function DashboardStudent() {
           </BottomContainer>
         </div>
       </main>
+
+      {/* Botón de cierre de sesión */}
       <div className="fixed bottom-6 right-11">
         <Button
           color="rojo"

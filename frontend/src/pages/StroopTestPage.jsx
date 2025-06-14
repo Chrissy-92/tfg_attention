@@ -1,11 +1,10 @@
-// ...importaciones iniciales
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import BottomContainer from "../components/BottomContainer.jsx";
 import api from "../services/api.js";
 
-const DURACION_ESTIMULO = 4000;
+const DURACION_ESTIMULO = 3000;
 
 export default function StroopTestPage() {
   const { id_nino } = useParams();
@@ -24,6 +23,7 @@ export default function StroopTestPage() {
   const timeoutRef = useRef(null);
   const bloqueado = useRef(false);
 
+  // Muestra el estímulo actual y lanza el temporizador
   const avanzar = () => {
     if (indice >= estimulos.length) {
       setFinalizado(true);
@@ -43,6 +43,7 @@ export default function StroopTestPage() {
     }, DURACION_ESTIMULO);
   };
 
+  // Lógica para guardar cada respuesta con sus condiciones
   const guardarRespuesta = (() => {
     let procesando = false;
 
@@ -72,12 +73,11 @@ export default function StroopTestPage() {
       const omitido = !respondio;
       const falloNeutro = respondio && esNeutro;
 
-      // 🎯 Nueva lógica de evaluación
       let correcto = false;
       if (esNeutro) {
-        correcto = !respondio; // ✅ si omite un neutro, es correcto
+        correcto = !respondio;
       } else if (palabraIgualColor) {
-        correcto = respondio; // ✅ si responde a un congruente, es correcto
+        correcto = respondio;
       }
 
       const nuevaRespuesta = {
@@ -96,9 +96,7 @@ export default function StroopTestPage() {
           id_evaluacion: idEvaluacionRef.current,
           ...nuevaRespuesta,
         });
-      } catch (error) {
-        console.error("Error al guardar detalle:", error);
-      }
+      } catch (error) {}
 
       const respuestasFinales = [...respuestas, nuevaRespuesta];
       setRespuestas(respuestasFinales);
@@ -115,10 +113,7 @@ export default function StroopTestPage() {
             puntaje: puntaje.toFixed(2),
             observaciones: "Resultado automático de Stroop test",
           });
-          console.log("✅ Resultado enviado al backend:", puntaje.toFixed(2));
-        } catch (err) {
-          console.error("Error al guardar resultado global:", err);
-        }
+        } catch (err) {}
 
         setFinalizado(true);
       } else {
@@ -159,7 +154,7 @@ export default function StroopTestPage() {
   return (
     <div className="min-h-screen bg-violet-300/50">
       <Header
-        title="Tarea Stroop"
+        title="Prueba Test Stroop"
         buttonLabel="Home"
         onButtonClick={() => navigate("/student-dashboard")}
       />
@@ -173,13 +168,10 @@ export default function StroopTestPage() {
                     id_nino: Number(id_nino),
                   });
                   idEvaluacionRef.current = data.id_evaluacion;
-                  console.log("🆔 ID evaluación creada:", data.id_evaluacion);
-
                   setEstimulos(data.estimulos);
                   setEmpezado(true);
                   setIndice(0);
                 } catch (err) {
-                  console.error("❌ Error al iniciar evaluación Stroop:", err);
                   alert("No se pudo iniciar la prueba Stroop.");
                 }
               }}

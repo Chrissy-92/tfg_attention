@@ -18,7 +18,6 @@ export default function ActivateStudentProfile({ idStudent: idStudentProp }) {
   const { login, user } = useAuth();
 
   const id_student = idStudentProp || params.id_student;
-
   const modoEdicion = user && !user.needsActivation;
   const isExternalActivation = !user && idStudentProp;
 
@@ -33,14 +32,9 @@ export default function ActivateStudentProfile({ idStudent: idStudentProp }) {
       const res = await api.get(`/ninos/${id_student}`);
       setNombre(res.data.nombre);
       setAvatarUrl(res.data.imagen_url);
-
-      if (modoEdicion) {
-        setPassword("******");
-      } else {
-        setPassword("123456");
-      }
+      setPassword(modoEdicion ? "******" : "123456");
     } catch (err) {
-      console.error("❌ Error al obtener datos del alumno:", err);
+      // Error al cargar datos del alumno
     }
   };
 
@@ -49,7 +43,6 @@ export default function ActivateStudentProfile({ idStudent: idStudentProp }) {
       const stored = localStorage.getItem("auth");
       const { token } = JSON.parse(stored || "{}");
       if (!token) return;
-
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       fetchStudent();
     } else if (isExternalActivation) {
@@ -163,7 +156,7 @@ export default function ActivateStudentProfile({ idStudent: idStudentProp }) {
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute right-3 top-9 text-gray-600"
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? "Ocultar" : "Ver"}
               </button>
             </div>
 

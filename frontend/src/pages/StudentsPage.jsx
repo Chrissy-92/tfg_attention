@@ -6,11 +6,13 @@ import ImgPerfil from "../components/ImgPerfil.jsx";
 import Header from "../components/Header.jsx";
 import CardWhite from "../components/CardWhite.jsx";
 
+// Página que muestra una lista de estudiantes del psicólogo
 export default function StudentsPage() {
   const { token } = useAuth();
   const [students, setStudents] = useState([]);
   const [error, setError] = useState(null);
 
+  // Carga todos los alumnos asociados al psicólogo
   useEffect(() => {
     api
       .get("/ninos", {
@@ -19,8 +21,7 @@ export default function StudentsPage() {
         },
       })
       .then((res) => setStudents(res.data))
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
         setError("Error al cargar los estudiantes");
       });
   }, [token]);

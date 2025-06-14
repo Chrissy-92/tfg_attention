@@ -1,26 +1,25 @@
-/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import { setAuthToken } from "../services/api.js";
 
 const AuthContext = createContext();
 
-//AuthProvider: componente que envuelve la App y gestiona el estado de autenticación (token + usuario).
+// Proveedor global que guarda el usuario logueado y su token
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Al cargar la app, buscamos si hay una sesión guardada en localStorage
   useEffect(() => {
     const stored = localStorage.getItem("auth");
     if (stored) {
       const { token, user } = JSON.parse(stored);
       setAuthToken(token);
-      setUser(user);
-      setLoading(false);
-    } else {
-      setLoading(false);
+      setUser({ ...user, token });
     }
+    setLoading(false);
   }, []);
 
+  // Inicia sesión guardando los datos en estado y localStorage
   const login = ({ token, user }) => {
     const userWithToken = { ...user, token };
     setAuthToken(token);
@@ -31,6 +30,7 @@ export function AuthProvider({ children }) {
     );
   };
 
+  // Cierra sesión y limpia todo
   const logout = () => {
     setUser(null);
     setAuthToken(null);
@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-//useAuth: hook para acceder a AuthContext desde cualquier componente.
+// Hook personalizado para acceder al contexto de autenticación
 export function useAuth() {
   return useContext(AuthContext);
 }

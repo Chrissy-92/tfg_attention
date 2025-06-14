@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function StudentCard({ student, onSelect }) {
   const navigate = useNavigate();
+
+  // Al hacer clic se dispara la función opcional y se redirige al informe del alumno
   const handleClick = () => {
     onSelect?.();
     navigate(`/integration/${student.id_nino}`);
@@ -12,7 +14,7 @@ export default function StudentCard({ student, onSelect }) {
   return (
     <div
       onClick={onSelect}
-      className="bg-green-50 border-4 rounded-xl cursor-pointer transition-all flex items-center justify-center w-52 h-64  hover:border-amber-200"
+      className="bg-green-50 border-4 rounded-xl cursor-pointer transition-all flex items-center justify-center w-52 h-64 hover:border-amber-200"
     >
       <div className="flex flex-col items-center space-y-2 gap-3">
         <ImgPerfil

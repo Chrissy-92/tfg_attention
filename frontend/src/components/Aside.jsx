@@ -1,6 +1,7 @@
 import Button from "./Button";
 import ImgPerfil from "./ImgPerfil";
 
+// Componente lateral para mostrar información del alumno en distintos contextos
 export default function Aside({
   student,
   modo, // "integration" o "student-dashboard"
@@ -10,6 +11,7 @@ export default function Aside({
 }) {
   if (!student) return null;
 
+  // Textos personalizados según el modo
   const descripcion =
     modo === "integration"
       ? [
@@ -29,15 +31,17 @@ export default function Aside({
 
   return (
     <aside className="w-full md:w-[340px] min-h-[620px] bg-white p-6 rounded-2xl border border-slate-300 flex flex-col items-center gap-4 text-[17px] shadow-lg justify-center">
+      {/* Imagen de perfil del alumno */}
       <ImgPerfil
         src={student.avatar_url || student.imagen_url || "/user_default.jpg"}
         alt={`Avatar de ${student.nombre}`}
         size="lg"
       />
 
-      <div className=" leading-relaxed tracking-normal space-y-2 gap-24">
+      <div className="leading-relaxed tracking-normal space-y-2 gap-24">
         <p className="text-2xl font-semibold">{student.nombre}</p>
 
+        {/* Información adicional solo en modo integración */}
         {modo === "integration" && (
           <>
             <p>
@@ -60,6 +64,7 @@ export default function Aside({
           </>
         )}
 
+        {/* Descripción informativa */}
         <div className="mt-4 italic space-y-5">
           {descripcion.map((texto, idx) => (
             <p key={idx}>{texto}</p>
@@ -67,6 +72,7 @@ export default function Aside({
         </div>
       </div>
 
+      {/* Botón si se proporciona */}
       {buttonLabel && onButtonClick && (
         <Button color={buttonColor} onClick={onButtonClick}>
           {buttonLabel}

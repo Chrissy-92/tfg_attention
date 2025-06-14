@@ -7,12 +7,13 @@ import {
 
 const router = Router();
 
+// Todas las rutas de integración requieren autenticación
 router.use(authenticate);
 
-// Guardar o actualizar informe
+// Guarda o actualiza el informe global de un niño
 router.post("/", saveIntegration);
 
-// Recuperar informe de un niño
+// Recupera el informe global de un niño concreto
 router.get("/:id_nino", fetchIntegration);
 
 export default router;

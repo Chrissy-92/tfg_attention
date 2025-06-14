@@ -17,20 +17,20 @@ export default function LoginPsychologist() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [modal, setModal] = useState(null);
 
+  // Actualiza los datos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Intenta hacer login con los datos introducidos
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const result = await loginPsychologist(form);
-      console.log("✅ Login correcto:", result);
       login({ token: result.token, user: result.user });
       navigate("/psychologist-dashboard");
     } catch (err) {
-      console.error("❌ Error en login:", err);
       setModal({
         tipo: "error",
         mensaje: "Credenciales inválidas. Inténtalo de nuevo.",
@@ -40,7 +40,7 @@ export default function LoginPsychologist() {
 
   return (
     <>
-      <Header title="TFG_Attention" />
+      <Header title="EduMind Kids" />
       <BottomContainer className="bg-gradient-to-br from-emerald-300 via-violet-300 to-pink-300">
         <CardWhite>
           <ImgPerfil

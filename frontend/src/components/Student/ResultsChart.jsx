@@ -4,6 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 export default function ResultsChart({ respuestas, titulo }) {
+  // Clasificamos las respuestas por tipo
   const totalCorrectos = respuestas.filter((r) => r.correcto).length;
   const totalErrores = respuestas.filter((r) => r.errores > 0).length;
   const totalOmitidos = respuestas.filter((r) => r.omitido).length;
@@ -14,7 +15,7 @@ export default function ResultsChart({ respuestas, titulo }) {
       {
         label: "Total",
         data: [totalCorrectos, totalErrores, totalOmitidos],
-        backgroundColor: ["#22c55e", "#ef4444", "#facc15"], // verde, rojo, amarillo
+        backgroundColor: ["#22c55e", "#ef4444", "#facc15"],
         borderWidth: 1,
       },
     ],

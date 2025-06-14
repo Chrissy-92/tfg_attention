@@ -1,6 +1,6 @@
 import pool from "../config/db.js";
 
-// Inserta un nuevo usuario (psicólogo o alumno)
+// Registra un nuevo usuario (psicólogo) en la base de datos
 export async function createUser({
   nombre,
   email,
@@ -14,10 +14,10 @@ export async function createUser({
     [nombre, email, hashedPassword, avatar_url]
   );
 
-  return rows[0];
+  return rows[0]; // Devolvemos los datos básicos del nuevo usuario
 }
 
-// Busca un usuario por email
+// Busca un usuario por su correo electrónico
 export async function findUserByEmail(email) {
   const { rows } = await pool.query(
     `SELECT id_usuario, nombre, email, password, avatar_url
@@ -25,5 +25,6 @@ export async function findUserByEmail(email) {
      WHERE email = $1`,
     [email]
   );
-  return rows[0];
+
+  return rows[0]; // Devuelve el usuario si existe, o undefined si no
 }

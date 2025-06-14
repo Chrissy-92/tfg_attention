@@ -1,3 +1,4 @@
+// Contenedor inferior reutilizable que ocupa toda la altura restante de la pantalla
 export default function BottomContainer({ children, className = "" }) {
   return (
     <div

@@ -7,12 +7,13 @@ import {
 
 const router = Router();
 
+// Todas las rutas de resultados requieren autenticación
 router.use(authenticate);
 
-// Guardar (o actualizar) el resultado agregado
+// Guarda o actualiza el resultado general de una evaluación
 router.post("/", saveResultado);
 
-// Listar todos los resultados de un niño
+// Devuelve todos los resultados de un niño concreto
 router.get("/:id_nino", fetchResultados);
 
 export default router;
