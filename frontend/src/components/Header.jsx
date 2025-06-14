@@ -16,7 +16,7 @@ export default function Header({ title, buttonLabel, onButtonClick }) {
       <div className="flex items-center justify-between px-4 py-4">
         {/* Logo y título */}
         <div className="flex items-center gap-3">
-          <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md">
+          <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white shadow-md">
             <img
               src="/EduMind-kids-logo.png"
               alt="Logo"

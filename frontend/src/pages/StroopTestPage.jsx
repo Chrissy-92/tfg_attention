@@ -152,9 +152,9 @@ export default function StroopTestPage() {
   guardarRespuestaRef.current = guardarRespuesta;
 
   return (
-    <div className="min-h-screen bg-violet-300/50">
+    <div className="min-h-screen bg-sky-300/50">
       <Header
-        title="Prueba Test Stroop"
+        title="Prueba Tarea Stroop"
         buttonLabel="Home"
         onButtonClick={() => navigate("/student-dashboard")}
       />

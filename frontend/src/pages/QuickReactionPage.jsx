@@ -17,7 +17,7 @@ export default function QuickReactionPage() {
       <BottomContainer>
         <div className="bg-white p-6 rounded-2xl shadow w-full max-w-xl text-center">
           <h2 className="text-xl font-semibold mb-4">
-            Aquí irá la lógica de la prueba
+            Prueba de Reacción Rápida (en construcción)
           </h2>
           <p className="text-gray-600">
             Espacio reservado para el desarrollo futuro.

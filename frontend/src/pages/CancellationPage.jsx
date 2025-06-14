@@ -32,10 +32,10 @@ export default function CancellationPage() {
       <BottomContainer>
         <div className="bg-white p-6 rounded-2xl shadow w-full max-w-xl text-center">
           <h2 className="text-xl font-semibold mb-4">
-            Prueba de Cancelación (en construcción)
+            Prueba de Cancelación de Letras (en construcción)
           </h2>
           <p className="text-gray-600">
-            Esta sección está preparada para implementar la prueba.
+            Espacio reservado para el desarrollo futuro.
           </p>
         </div>
       </BottomContainer>

@@ -12,7 +12,7 @@ export default function DashboardStudent() {
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen bg-violet-100">
+    <div className="min-h-screen bg-violet-200">
       <Header title="EduMind Kids" />
       <main className="flex justify-center items-center gap-48 mx-5 h-[calc(100vh-80px)]">
         {/* Información lateral del alumno */}
@@ -33,7 +33,7 @@ export default function DashboardStudent() {
           <BottomContainer className="w-[900px] max-h-[600px] overflow-auto items-start">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
               {/* Prueba Stroop */}
-              <section className="bg-purple-200 p-6 rounded-2xl shadow">
+              <section className="bg-sky-200 p-6 rounded-2xl shadow">
                 <h2 className="text-xl font-bold mb-2">Tarea Stroop</h2>
                 <p>
                   Pulsa la barra espaciadora cuando el nombre del color y el
@@ -41,12 +41,14 @@ export default function DashboardStudent() {
                 </p>
                 <p>No hagas nada si no coinciden.</p>
                 <p className="mt-2">Pulsa en EMPEZAR cuando estés listo.</p>
-                <Button
-                  onClick={() => safeNavigate(`/stroop-test/${user.id_nino}`)}
-                  className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-                >
-                  EMPEZAR
-                </Button>
+                <div className="flex justify-center p-4">
+                  <Button
+                    onClick={() => safeNavigate(`/stroop-test/${user.id_nino}`)}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+                  >
+                    EMPEZAR
+                  </Button>
+                </div>
               </section>
 
               {/* Prueba de Cancelación de letras */}
@@ -54,12 +56,14 @@ export default function DashboardStudent() {
                 <h2 className="text-xl font-bold mb-2">Test de Cancelación</h2>
                 <p>Busca y pulsa la letra objetivo tan rápido como puedas.</p>
                 <p className="mt-2">Pulsa en EMPEZAR cuando estés listo.</p>
-                <Button
-                  onClick={() => safeNavigate("/cancellation")}
-                  className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition"
-                >
-                  EMPEZAR
-                </Button>
+                <div className="flex justify-center p-4">
+                  <Button
+                    onClick={() => safeNavigate("/cancellation")}
+                    className="mt-12 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition"
+                  >
+                    EMPEZAR
+                  </Button>
+                </div>
               </section>
 
               {/* Prueba de Reacción Rápida */}
@@ -72,12 +76,14 @@ export default function DashboardStudent() {
                   Después, pulsa la que tenga el número mayor ignorando el
                   tamaño.
                 </p>
-                <Button
-                  onClick={() => safeNavigate("/quick-reaction")}
-                  className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-                >
-                  EMPEZAR
-                </Button>
+                <div className="flex justify-center p-4">
+                  <Button
+                    onClick={() => safeNavigate("/quick-reaction")}
+                    className="mt-4 bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
+                  >
+                    EMPEZAR
+                  </Button>
+                </div>
               </section>
 
               {/* Prueba Memoria de Trabajo */}
@@ -85,12 +91,14 @@ export default function DashboardStudent() {
                 <h2 className="text-xl font-bold mb-2">Memoria de Trabajo</h2>
                 <p>Memoriza la posición de cada dibujo en la cuadrícula.</p>
                 <p>Después pulsa el lugar donde crees que estaba.</p>
-                <Button
-                  onClick={() => safeNavigate("/working-memory")}
-                  className="mt-4 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
-                >
-                  EMPEZAR
-                </Button>
+                <div className="flex justify-center p-4">
+                  <Button
+                    onClick={() => safeNavigate("/working-memory")}
+                    className="mt-4 bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition"
+                  >
+                    EMPEZAR
+                  </Button>
+                </div>
               </section>
             </div>
           </BottomContainer>
