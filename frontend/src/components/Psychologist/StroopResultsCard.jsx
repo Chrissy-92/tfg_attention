@@ -18,11 +18,7 @@ export default function StroopResultsCard({ respuestasStroop }) {
 
   // Lógica que genera el resumen y recomendación según el patrón de respuestas
   function evaluarStroop() {
-    if (
-      correctas + omitidas === total &&
-      incorrectas === 0 &&
-      incorrectasNeutras === 0
-    ) {
+    if (incorrectas === 0 && omitidas === 5) {
       return {
         mensaje:
           "El alumno ha completado la tarea sin errores, demostrando un control atencional y ejecutivo excelente.",
@@ -31,12 +27,7 @@ export default function StroopResultsCard({ respuestasStroop }) {
       };
     }
 
-    if (
-      correctas >= 12 &&
-      incorrectas <= 2 &&
-      omitidas <= 1 &&
-      incorrectasNeutras === 0
-    ) {
+    if (incorrectas <= 3 && omitidas >= 4) {
       return {
         mensaje:
           "Rendimiento sobresaliente: predomina la precisión y la inhibición adecuada ante estímulos irrelevantes.",
@@ -45,25 +36,16 @@ export default function StroopResultsCard({ respuestasStroop }) {
       };
     }
 
-    if (incorrectasNeutras >= 3 && correctas <= 10) {
+    if (incorrectas >= 5) {
       return {
         mensaje:
-          "El alumno responde impulsivamente a estímulos neutros, lo que sugiere problemas en el filtro atencional.",
-        sugerencia:
-          "Trabajar tareas Go/No-Go y ejercicios de discriminación de estímulos relevantes/irrelevantes para reducir la impulsividad.",
-      };
-    }
-
-    if (incorrectas >= 8 && correctas <= 5) {
-      return {
-        mensaje:
-          "Alta tasa de errores: posible impulsividad o dificultades de control inhibitorio ante estímulos congruentes.",
+          "Alta tasa de errores: posible impulsividad o dificultades de control inhibitorio ante estímulos incongruentes.",
         sugerencia:
           "Reforzar el autocontrol con juegos que exijan pausas deliberadas y feedback inmediato, premiando la constancia.",
       };
     }
 
-    if (correctas >= 6 && incorrectas >= 6) {
+    if (correctas + omitidas === incorrectas) {
       return {
         mensaje:
           "Existe un equilibrio entre aciertos y fallos, indicando variabilidad atencional que conviene monitorizar.",
