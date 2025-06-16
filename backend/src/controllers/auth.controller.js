@@ -43,11 +43,14 @@ export async function register(req, res) {
 
 // Esta función permite a un usuario iniciar sesión con su email y contraseña
 export async function login(req, res) {
+  console.log(req.body);
   const { email, password } = req.body;
 
   try {
     // Buscamos al usuario por su correo
     const user = await findUserByEmail(email);
+    console.log("Usuario encontrado:", user);
+    console.log("Hash de la contraseña en BD:", user?.password);
 
     // Si no existe o la contraseña no coincide, mostramos error
     if (!user || !(await bcrypt.compare(password, user.password))) {
