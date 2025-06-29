@@ -177,11 +177,17 @@ export default function StroopTestPage() {
               }}
               className="px-6 py-3 text-white bg-blue-600 rounded-2xl hover:bg-blue-700 transition"
             >
-              Iniciar prueba Stroop
+              Comenzar Prueba
             </button>
           ) : finalizado ? (
             <div>
-              <h2 className="text-xl font-bold mb-4">Prueba completada</h2>
+              <h2 className="text-xl font-bold mb-4">¡Prueba completada!</h2>
+              <button
+                className="bg-green-600 text-white px-6 py-3 rounded-2xl hover:bg-green-700"
+                onClick={() => navigate("/student-dashboard")}
+              >
+                Volver al Dashboard
+              </button>
             </div>
           ) : estimulo ? (
             <div>
